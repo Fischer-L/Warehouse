@@ -56,7 +56,7 @@ var intervalProxy = (function () {
 					
 						var that = this;
 						
-						that.task();
+						that.task.call(window);
 						
 						// Here use the recursive solution to achieve the interval tasking with the setTimeout function, instead of the setInterval function 
 						that.handle = setTimeout(
