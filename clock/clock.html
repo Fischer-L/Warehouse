@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<style>
+		.clock {
+			width: 300px;
+			margin: 100px 0 0 50px;
+			float: left;
+		}
+		.none {
+			display: none;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="clock ">
+		<canvas class="swissClock" width="300" height="300"></canvas>
+	</div>
+	<script type="text/javascript" src="clock.js"></script>
+	<script type="text/javascript">
+		var swissClock = clockBuilder.build("swiss", document.querySelector("canvas.swissClock"));
+		swissClock.tick();
+	</script>
+</body>
+
+</html>
