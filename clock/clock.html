@@ -8,6 +8,17 @@
 			margin: 100px 0 0 50px;
 			float: left;
 		}
+		.loc {
+			width: 100px;
+			margin: 0 auto;
+			margin-top: 10px;
+			padding: 6px 8px;
+			background-color: #555;
+			color: #fff;
+			font-weight: bold;
+			text-align: center;
+			font-family: Helvetica, sans-serif;
+		}
 		.none {
 			display: none;
 		}
@@ -17,11 +28,41 @@
 <body>
 	<div class="clock ">
 		<canvas class="swissClock" width="300" height="300"></canvas>
+		<div class="loc">Zurich</div>
+	</div>
+	<div class="clock">
+		<canvas class="colorClock" width="300" height="300"></canvas>
+		<div class="loc">Taipei</div>
 	</div>
 	<script type="text/javascript" src="clock.js"></script>
 	<script type="text/javascript">
+		
+		var getDateAt = function (loc) {
+				var timeOffset = 0,
+					local = new Date,
+					toUTCOffset = local.getTimezoneOffset() * 60 * 1000;
+				
+				switch (loc) {
+					case "San Jose":
+						timeOffset = -8;
+					break;
+					case "Taipei":
+						timeOffset = 8;
+					break;
+					case "Zurich":
+						timeOffset = 1;
+					break;
+				}
+				timeOffset *= 60 * 60 * 1000;
+				
+				return new Date(local.getTime() + toUTCOffset + timeOffset);
+			}
+		
 		var swissClock = clockBuilder.build("swiss", document.querySelector("canvas.swissClock"));
-		swissClock.tick();
+		swissClock.tick(getDateAt("Zurich"));
+
+		var colorClock = clockBuilder.build("color_circles", document.querySelector("canvas.colorClock"));
+		colorClock.tick(getDateAt("Taipei"));
 	</script>
 </body>
 
