@@ -156,7 +156,8 @@ var clockBuilder = (function () {
 		*/
 		_cls_Drawer.prototype.rotateByTime = function (timeBase, date) {
 		
-			var hh = date.getHours() % 12,
+			var d,
+				hh = date.getHours() % 12,
 				mm = date.getMinutes(),
 				ss = date.getSeconds();
 				
