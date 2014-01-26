@@ -192,6 +192,9 @@ var clockBuilder = (function () {
 			<NUM> __timer = the handle to the setInterval call
 			<OBJ> __dr = the instance of this::_cls_Drawer
 		Methods:
+			[ Private ]
+			> __calibrateTicking: Calibrate the time gap between the canvas drawing time and the acutal time
+			> __keepTicking: The method performing the task which makes the clock keep ticking
 			[ Public ]
 			> tick: Let the clock start ticking
 			> stop: Stop the clock
@@ -201,32 +204,58 @@ var clockBuilder = (function () {
 	*/
 	var _cls_Clock = function (drawer) {
 		
+		var __dr = drawer;
+		
 		var __now,
 		
-			__timer,
-			
-			__dr = drawer;
+			__timer = null;
 		
+		/*	Arg:
+				<DAT> date = the date instance
+			Return:
+				<NUM> The right time after for the next clock ticking(canvas drawing)
+		*/
+		var __calibrateTicking = function (date) {
+				var timeGap = date.getMilliseconds();
+				// If the time gap is too over, return the calibrated time for the next setTimeout
+				return (timeGap > 100) ? 1000 - timeGap : 1000 ; 
+			}
+		
+		/*
+		*/
+		var __keepTicking = function () {
+				// Draw this sec
+				__dr.clearAll();
+				__dr.drawTimeMarks();
+				__dr.drawHands(__now);
+				// Prepre for the next sec
+				__now = new Date(__now.getTime() + 1000);
+				__timer = setTimeout(__keepTicking, __calibrateTicking(new Date()));
+			}
+   		
 		/*	Arg:
 				<DAT> [date] = the starting time. If not given, would now. In order to unify the hour/minute/second's value, use the Date instance to store these values. And the year/month/day value in the Date instance could be useful in the future.
 		*/
 		this.tick = function (date) {
-			
-			__now = (date instanceof Date) ? date : new Date;
-			
-			__timer = setInterval(function () {
-				__now = new Date(__now.getTime() + 1000);
-				__dr.clearAll();
-				__dr.drawTimeMarks();
-				__dr.drawHands(__now);				
-			}, 1000);
+			if (__timer === null) { // Prevent double calling the tick method while already being ticking				
+				__now = (date instanceof Date) ? date : new Date;
+				
+				var timeGap = __calibrateTicking(__now);
+				
+				// Make the now being at the right beginning of the next sec
+				__now = new Date(__now.getTime() + timeGap);
+				
+				// Let's start ticking the clock at the right beginning of the next sec
+				__timer = setTimeout(__keepTicking, timeGap);
+			}
 		}
 		
 		/*
 		*/
 		this.stop = function () {
-			if (__timer) {
-				clearInterval(__timer);
+			if (__timer !== null) {
+				clearTimeout(__timer);
+				__timer = null;
 			}
 		}
 		
