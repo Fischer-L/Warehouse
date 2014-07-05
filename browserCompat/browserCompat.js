@@ -8,7 +8,7 @@
 		@ Is IE: <NUM> the version of IE
 		@ Not IE: NaN
 */
-var getIEVersion = function () {
+function getIEVersion() {
 	var rv = -1; // Return value assumes failure.
 	if (navigator.appName == 'Microsoft Internet Explorer') {
 		var ua = navigator.userAgent;
@@ -26,7 +26,7 @@ var getIEVersion = function () {
 		<NUM> windowHeight : the height of the client window in px. If uable to find, then -1.
 	}
 */
-var getWindowWH = function () {
+function getWindowWH() {
 	if(window.innerWidth) {
 		return {windowWidth : window.innerWidth, windowHeight: window.innerHeight};
 	} else if(document.documentElement.clientHeight) {
@@ -44,7 +44,7 @@ var getWindowWH = function () {
 	Return:
 		<OBJ> the normalized event obj
 */
-var normalizeEvt = function (e) {
+function normalizeEvt(e) {
 				
 	e = e || window.event;
 	
@@ -71,7 +71,7 @@ var normalizeEvt = function (e) {
 		<STR> evt = the event name, as per the normal addEventListener method
 		<FN> eHandle = the event handle
 */
-var addEvt = function (elem, evt, eHandle) {
+function addEvt(elem, evt, eHandle) {
 	if (elem.addEventListener) {
 		elem.addEventListener(evt, eHandle);
 	} else if (elem.attachEvent) { // The IE 8 case
@@ -82,7 +82,7 @@ var addEvt = function (elem, evt, eHandle) {
 /*	Func: Mitigate the removeEventListener & detachEvent methods
 	Arg: Refer to addEvt
 */
-var rmEvent = function (elem, evt, eHandle) {
+function rmEvent(elem, evt, eHandle) {
 	if (elem.removeEventListener) {
 		elem.removeEventListener(evt, eHandle);
 	} else if (elem.detachEvent) { // The IE 8 case
