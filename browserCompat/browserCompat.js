@@ -90,6 +90,69 @@ function rmEvent(elem, evt, eHandle) {
 	}
 }
 
+/*	Arg:
+		<*> target = the target to test
+	Return:
+		@ OK: true
+		@ NG: false
+*/
+function isStr(target) {
+	return (typeof target == "string");
+}
+
+/*	Arg:
+		<*> target = the target to test
+	Return:
+		@ OK: true
+		@ NG: false
+*/
+function isFunc(target) {
+	return (typeof target == "function");
+}
+
+/*	Arg:
+		<*> target = the target to test
+	Return:
+		@ OK: true
+		@ NG: false
+*/		
+function isObj(target) {
+	return (target instanceof Object);
+}
+
+/*	Arg:
+		<*> target = the target to test
+	Return:
+		@ OK: true (text node is counted as well)
+		@ NG: false
+*/		
+function isHTMLElem(target) {
+	return (   target
+			&& typeof target == "object"
+			&& typeof target.nodeType == "number"
+			&& (target.nodeType === 1 || target.nodeType === 3)
+		   );
+}
+
+/*	Arg:
+		<*> target = the target to test
+	Return:
+		@ OK: true
+		@ NG: false
+*/	
+function isArr(target) {
+	return (target instanceof Array);
+}
+
+/*	Arg:
+		<*> target = the target to test
+	Return:
+		@ OK: true
+		@ NG: false
+*/	
+function isDate(target) {
+	return (target instanceof Date);
+}
 
 /*
  * The prototype chain
