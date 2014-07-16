@@ -89,6 +89,62 @@ function rmEvent(elem, evt, eHandle) {
 		elem.detachEvent("on" + evt, eHandle);
 	}
 }
+/*	Func:
+		Get the computed style value
+	Arg:
+		<ELM> elem = the DOM elem
+		<STR> name = the style name
+*/
+function getComputedStyle = function (elem, name) {
+	var v = null;
+
+	if (window.getComputedStyle) {
+
+		v = window.getComputedStyle(elem)[name] || null;
+
+	} else if (elem.currentStyle) { // Hack for IE...Reference from the jQuery
+
+		v = elem.currentStyle && elem.currentStyle[name]
+
+		var left,
+			rsLeft,
+			style = elem.style;
+
+		// Avoid setting v to empty string here
+		// so we don't default to auto
+		if ( v == null && style && style[name] ) {
+			v = style[ name ];
+		}
+
+		// From the awesome hack by Dean Edwards
+		// http://erik.eae.net/archives/2007/07/27/18.54.15/#comment-102291
+
+		// If we're not dealing with a regular pixel number
+		// but a number that has a weird ending, we need to convert it to pixels
+		// but not position css attributes, as those are proportional to the parent element instead
+		// and we can't measure the parent instead because it might trigger a "stacking dolls" problem
+
+		// Remember the original values
+		left = style.left;
+		rsLeft = elem.runtimeStyle && elem.runtimeStyle.left;
+
+		// Put in the new values to get a computed value out
+		if ( rsLeft ) {
+			elem.runtimeStyle.left = elem.currentStyle.left;
+		}
+		style.left = name === "fontSize" ? "1em" : v;
+		v = style.pixelLeft + "px";
+
+		// Revert the changed values
+		style.left = left;
+		if ( rsLeft ) {
+			elem.runtimeStyle.left = rsLeft;
+		}
+
+	}
+
+	return v;
+}
 
 /*	Arg:
 		<*> target = the target to test
