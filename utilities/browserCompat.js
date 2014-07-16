@@ -40,7 +40,7 @@ function getWindowWH() {
 
 /*	Func:
 		Get the document's scrolling info
-	Arg:
+	Retunr:
 		<OBJ> {
 			<NUM> top, left, width, height: the document's scrolling top/left/height/width info
 		}
@@ -68,8 +68,11 @@ function getDocScrollInfo () {
 	Arg:
 		<ELM> elem = the DOM elem
 		<STR> name = the style name
+	Return:
+		@ OK: <STR> the computed style
+		@ NG: null
 */
-function getComputedStyle = function (elem, name) {
+function getComputedStyle(elem, name) {
 	var v = null;
 
 	if (window.getComputedStyle) {

@@ -101,3 +101,89 @@ function removeClass(elem, classes) {
 		return false;
 	}
 }
+
+/*	Func:
+		Scroll the viewport to the target element
+	Args:
+		<ELM> target = the target element to which we want to scroll
+		<NUM> duration = the duration for scrolling
+*/
+var scrollTo = (function () {
+	
+		var _timer = null,
+			
+			_scrollingInterval = 13,
+			
+			_scrollingPosFactor = (-Math.cos(p*Math.PI)/2) + 0.5;
+			
+		
+		function _cleanTimer() {
+			if (_timer !== null) {
+				clearInterval(_timer);
+				_timer = null;			
+			}
+		}
+		
+		function _getDocScrollInfo () {
+			// Call the Warehouse.utilities.browserCompat.getDocScrollInfo
+		}
+		
+		function _getComputedStyle(elem, name) {
+			// Call the Warehouse.utilities.browserCompat.getComputedStyle
+		}
+		
+		function _isHTMLElem(target) [
+			// Call the Warehouse.utilities.browserCompat.isHTMLElem
+		}
+		
+	return function (target, duration) {
+		
+		if (   !_isHTMLElem(target)
+			|| typeof duration != "number"
+			|| isNaN(duration)
+			|| duration <= 0
+		) {
+			return;
+		}
+		
+		_cleanTimer();
+		
+		var scroller = {};
+				
+		scroller.target_pos = {
+			top : target.getBoundingClientRect().top - 50,
+			left : target.getBoundingClientRect().left
+		};		
+		
+		scroller.info = _getDocScrollInfo();
+		
+		scroller.begin_time = (new Date).getTime();
+		
+		scroller.step = function (){
+		
+			var t = (new Date).getTime(),
+				p = (t - scroller.begin_time) / duration;
+				
+			if(p >= 1){
+			
+				_cleanTimer();
+				
+				setTimeout(
+					function () {
+						window.scrollTo(scroller.target_pos.left, scroller.target_pos.top);
+					},
+					_scrollingInterval
+				);
+				
+			} else{
+			
+				window.scrollTo(
+					_scrollingPosFactor * (scroller.target_pos.left - scroller.info.left) + scroller.info.left,
+					_scrollingPosFactor * (scroller.target_pos.top - scroller.info.top) + scroller.info.top
+				);				
+			}
+		}		
+		
+		_timer = setInterval(scroller.step, _scrollingInterval);
+	}
+}());
