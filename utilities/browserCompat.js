@@ -38,57 +38,31 @@ function getWindowWH() {
 	}
 }
 
-/*	Func: Mitigate the differences of the event obj between browsers. Use this function in the event handler.
+/*	Func:
+		Get the document's scrolling info
 	Arg:
-		<OBJ> e = the event obj
-	Return:
-		<OBJ> the normalized event obj
-*/
-function normalizeEvt(e) {
-				
-	e = e || window.event;
-	
-	e.target = e.target || e.srcElement;
-	
-	if (!e.stopPropoagation) {
-		e.stopPropoagation = function () {
-			this.cancelBubble = true;
+		<OBJ> {
+			<NUM> top, left, width, height: the document's scrolling top/left/height/width info
 		}
+*/		
+function getDocScrollInfo () {
+	var top = left = width = height = 0;
+	
+	if (document.documentElement && document.documentElement.scrollTop) {
+		top = document.documentElement.scrollTop;
+		left = document.documentElement.scrollLeft;
+		width = document.documentElement.scrollWidth;
+		height = document.documentElement.scrollHeight;
+	} else if (document.body) {
+		top = document.body.scrollTop;
+		left = document.body.scrollLeft;
+		width = document.body.scrollWidth;
+		height = document.body.scrollHeight;
 	}
 	
-	if (!e.preventDefault) {
-		e.preventDefault = function () {
-			this.returnValue = false;
-		}
-	}
-	
-	return e;
+	return { top : top, left : left, width : width, height : height };
 }
 
-/*	Func: Mitigate the addEventListener & attachEvent methods
-	Arg:
-		<ELM> elem = the DOM elem into which the event is being added
-		<STR> evt = the event name, as per the normal addEventListener method
-		<FN> eHandle = the event handle
-*/
-function addEvt(elem, evt, eHandle) {
-	if (elem.addEventListener) {
-		elem.addEventListener(evt, eHandle);
-	} else if (elem.attachEvent) { // The IE 8 case
-		elem.attachEvent("on" + evt, eHandle);
-	}
-}
-
-/*	Func: Mitigate the removeEventListener & detachEvent methods
-	Arg: Refer to addEvt
-*/
-function rmEvent(elem, evt, eHandle) {
-	if (elem.removeEventListener) {
-		elem.removeEventListener(evt, eHandle);
-	} else if (elem.detachEvent) { // The IE 8 case
-		elem.detachEvent("on" + evt, eHandle);
-	}
-}
 /*	Func:
 		Get the computed style value
 	Arg:
@@ -144,6 +118,58 @@ function getComputedStyle = function (elem, name) {
 	}
 
 	return v;
+}
+
+/*	Func: Mitigate the differences of the event obj between browsers. Use this function in the event handler.
+	Arg:
+		<OBJ> e = the event obj
+	Return:
+		<OBJ> the normalized event obj
+*/
+function normalizeEvt(e) {
+				
+	e = e || window.event;
+	
+	e.target = e.target || e.srcElement;
+	
+	if (!e.stopPropoagation) {
+		e.stopPropoagation = function () {
+			this.cancelBubble = true;
+		}
+	}
+	
+	if (!e.preventDefault) {
+		e.preventDefault = function () {
+			this.returnValue = false;
+		}
+	}
+	
+	return e;
+}
+
+/*	Func: Mitigate the addEventListener & attachEvent methods
+	Arg:
+		<ELM> elem = the DOM elem into which the event is being added
+		<STR> evt = the event name, as per the normal addEventListener method
+		<FN> eHandle = the event handle
+*/
+function addEvt(elem, evt, eHandle) {
+	if (elem.addEventListener) {
+		elem.addEventListener(evt, eHandle);
+	} else if (elem.attachEvent) { // The IE 8 case
+		elem.attachEvent("on" + evt, eHandle);
+	}
+}
+
+/*	Func: Mitigate the removeEventListener & detachEvent methods
+	Arg: Refer to addEvt
+*/
+function rmEvent(elem, evt, eHandle) {
+	if (elem.removeEventListener) {
+		elem.removeEventListener(evt, eHandle);
+	} else if (elem.detachEvent) { // The IE 8 case
+		elem.detachEvent("on" + evt, eHandle);
+	}
 }
 
 /*	Arg:
