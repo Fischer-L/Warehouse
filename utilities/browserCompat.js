@@ -211,13 +211,22 @@ function normalizeEvt(event) {
 		<ELM> elem = the DOM elem into which the event is being added
 		<STR> evt = the event name, as per the normal addEventListener method
 		<FN> eHandle = the event handle
+	Return:
+		<FN> The handle to the event handler (Use this for removing event).
 */
 function addEvt(elem, evt, eHandle) {
+
+	var proxyHandle = function (e) {
+			return eHandle.call(elem, normalizeEvt(e)); // Utilize the Warehouse.utilities.browserCompat.normalizeEvt
+		};
+	
 	if (elem.addEventListener) {
-		elem.addEventListener(evt, eHandle);
+		elem.addEventListener(evt, proxyHandle);
 	} else if (elem.attachEvent) { // The IE 8 case
-		elem.attachEvent("on" + evt, eHandle);
+		elem.attachEvent("on" + evt, proxyHandle);
 	}
+	
+	return proxyHandle;
 }
 
 /*	Func: Mitigate the removeEventListener & detachEvent methods
