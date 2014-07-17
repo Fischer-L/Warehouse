@@ -216,9 +216,9 @@ function normalizeEvt(event) {
 */
 function addEvt(elem, evt, eHandle) {
 
-	var proxyHandle = function (e) {
-			return eHandle.call(elem, normalizeEvt(e)); // Utilize the Warehouse.utilities.browserCompat.normalizeEvt
-		};
+	function proxyHandle(e) {
+		return eHandle.call(elem, normalizeEvt(e)); // Utilize the Warehouse.utilities.browserCompat.normalizeEvt
+	};
 	
 	if (elem.addEventListener) {
 		elem.addEventListener(evt, proxyHandle);
