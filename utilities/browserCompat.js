@@ -123,31 +123,87 @@ function getComputedStyle(elem, name) {
 	return v;
 }
 
-/*	Func: Mitigate the differences of the event obj between browsers. Use this function in the event handler.
+/*	Func:
+		From John Resig.
+		Mitigate the differences of the event obj between browsers. Use this function in the event handler.
 	Arg:
-		<OBJ> e = the event obj
+		<OBJ> event = the event obj
 	Return:
 		<OBJ> the normalized event obj
 */
-function normalizeEvt(e) {
-				
-	e = e || window.event;
+function normalizeEvt(event) {
+
+	function returnTrue() { return true; } 	
+	function returnFalse() { return false; }
 	
-	e.target = e.target || e.srcElement;
+	if (!event || !event.stopPropagation) {
 	
-	if (!e.stopPropoagation) {
-		e.stopPropoagation = function () {
-			this.cancelBubble = true;
+		var old = event || window.event;
+		
+		// Clone the old object so that we can modify the values
+		event = {};
+		for (var prop in old) { 
+			event[prop] = old[prop];
+		}
+		
+		// The event occurred on this element
+		if (!event.target) {
+			event.target = event.srcElement || document;
+		}
+		
+		// Handle which other element the event is related to
+		event.relatedTarget = event.fromElement === event.target ?
+		event.toElement :
+		event.fromElement;
+		
+		// Stop the default browser action
+		event.preventDefault = function () {
+			event.returnValue = false;
+			event.isDefaultPrevented = returnTrue;
+		};
+		event.isDefaultPrevented = returnFalse;
+			
+		// Stop the event from bubbling
+		event.stopPropagation = function () {
+			event.cancelBubble = true;
+			event.isPropagationStopped = returnTrue;
+		};
+		event.isPropagationStopped = returnFalse;
+		
+		// Stop the event from bubbling and executing other handlers
+		event.stopImmediatePropagation = function () {
+			this.isImmediatePropagationStopped = returnTrue;
+			this.stopPropagation();
+		};
+		event.isImmediatePropagationStopped = returnFalse;
+		
+		// Handle mouse position
+		if (event.clientX != null) {
+		
+			var doc = document.documentElement, body = document.body;
+			
+			event.pageX = event.clientX +
+						  (doc && doc.scrollLeft || body && body.scrollLeft || 0) -
+						  (doc && doc.clientLeft || body && body.clientLeft || 0);
+			event.pageY = event.clientY +
+						  (doc && doc.scrollTop || body && body.scrollTop || 0) -
+						  (doc && doc.clientTop || body && body.clientTop || 0);
+		}
+		
+		// Handle key presses
+		event.which = event.charCode || event.keyCode;
+		
+		// Fix button for mouse clicks:
+		// 0 == left; 1 == middle; 2 == right
+		if (event.button != null) {
+			event.button =  event.button & 1 ?
+							0 : event.button & 4 ?
+							1 : event.button & 2 ? 
+							2 : 0;
 		}
 	}
 	
-	if (!e.preventDefault) {
-		e.preventDefault = function () {
-			this.returnValue = false;
-		}
-	}
-	
-	return e;
+	return event; 
 }
 
 /*	Func: Mitigate the addEventListener & attachEvent methods
