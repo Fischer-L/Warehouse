@@ -35,12 +35,12 @@ The first line of the input gives the number of test cases, T. T test cases foll
 Each test case consists of a single line beginning with a positive integer N, representing the number of buttons that need to be pressed. This is followed by N terms of the form "Ri Pi" where Ri is a robot color (always 'O' or 'B'), and Pi is a button position.
 
 
-#Output
+##Output
 
 For each test case, output one line containing "Case #x: y", where x is the case number (starting from 1) and y is the minimum number of seconds required for the robots to push the given buttons, in order.
 
 
-#Limits
+##Limits
 
 1 ≤ Pi ≤ 100 for all i.
 
@@ -57,15 +57,15 @@ Large dataset
 1 ≤ N ≤ 100. 
 
 
-#Sample
+##Sample
 
-Input                 Output
+Input                 Output 
 
-3                     Case #1: 6
+3                     Case #1: 6 
 
-4 O 2 B 1 B 2 O 4     Case #2: 100
+4 O 2 B 1 B 2 O 4     Case #2: 100 
 
-3 O 5 O 8 B 100       Case #3: 4
+3 O 5 O 8 B 100       Case #3: 4 
 
 2 B 2 B 1
 
