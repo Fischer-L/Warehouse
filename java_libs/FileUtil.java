@@ -24,13 +24,13 @@ public class FileUtil {
 	 * @param dstPath
 	 * 		The file path
 	 * @param readable
-	 * 		True = open the file as readable. False = not readable.
+	 * 		True = open the file as readable. False = not readable. Null = Just open not setting any.
 	 * @param writable
-	 * 		True = open the file as writable. False = not writable.
+	 * 		True = open the file as writable. False = not writable. Null = Just open not setting any.
 	 * @param executable
-	 * 		True = open the file as executable. False = not executable.
+	 * 		True = open the file as executable. False = not executable. Null = Just open not setting any.
 	 * @param ownerOnly
-	 * 		True = open the file as owner only. False = not owner only.
+	 * 		True = open the file as owner only. False = not owner only. Null = True.
 	 * @return
 	 * 		One File object associated with the opened file
 	 * @throws IOException 
@@ -45,13 +45,36 @@ public class FileUtil {
 			}
 			
 			f.createNewFile();
+		}	
+		
+		Boolean _ownerOnly = (ownerOnly == null) ? true : ownerOnly;
+		
+		if (readable != null) {
+			f.setReadable(readable, _ownerOnly);
 		}
 		
-		f.setReadable(readable, ownerOnly);
-		f.setWritable(writable, ownerOnly);
-		f.setExecutable(executable, ownerOnly);
+		if (writable != null) {
+			f.setWritable(writable, _ownerOnly);
+		}
+		
+		if (executable != null) {
+			f.setExecutable(executable, _ownerOnly);
+		}		
 		
 		return f;
+	}
+	
+	/**
+	 * Equal to the invocation of openFile(dstPath, null, null, null, null) 
+	 * 
+	 * @param dstPath
+	 * 		Refer to openFile(String dstPath, Boolean readable, Boolean writable, Boolean executable, Boolean ownerOnly)
+	 * @return
+	 * 		Refer to openFile(String dstPath, Boolean readable, Boolean writable, Boolean executable, Boolean ownerOnly)
+	 * @throws IOException
+	 */
+	public static File openFile(String dstPath) throws IOException {
+		return FileUtil.openFile(dstPath, null, null, null, null);
 	}
 
 	/**
