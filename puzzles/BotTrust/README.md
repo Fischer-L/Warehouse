@@ -28,7 +28,7 @@ Time | Orange           | Blue
   6  | Push button 4    | Stay at button 2
 
 
-#Input
+##Input
 
 The first line of the input gives the number of test cases, T. T test cases follow.
 
