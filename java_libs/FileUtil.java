@@ -40,8 +40,12 @@ public class FileUtil {
 		File f = new File(dstPath);
 		if (!f.exists()) {
 			
-			if (!f.getParentFile().mkdirs()) {
-				throw new IOException("Fail to make the dirs for the file path: " + dstPath + "!");
+			File fp = f.getParentFile();
+			
+			if (!fp.exists()) {
+				if (!fp.mkdirs()) {
+					throw new IOException("Fail to make the dirs for the file path: " + dstPath + "!");
+				}
 			}
 			
 			f.createNewFile();
