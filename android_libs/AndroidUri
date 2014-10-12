@@ -11,8 +11,10 @@ import android.net.Uri;
 
 import android_libs.Storage;
 
+/**
+ * A helper class for Android Uri
+ */
 public class AndroidUri {
-
 
 	/**
 	 * Get uri from drawable resource
