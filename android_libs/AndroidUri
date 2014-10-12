@@ -1,0 +1,60 @@
+package android_libs
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import android.content.Context;
+import android.net.Uri;
+
+import android_libs.Storage;
+
+public class AndroidUri {
+
+
+	/**
+	 * Get uri from drawable resource
+	 * 
+	 * @param ctx
+	 * 		The activity context
+	 * @param drawableID
+	 * 		The resource id to drawable resource
+	 * @return
+	 * 		- OK: Uri to drawable resource <br/>
+	 * 		= NG: null
+	 */
+	public static Uri getUriFromDrawable(Context ctx, int drawableID) {
+				
+		File f = Storage.createExternalCacheImgFile(ctx);
+		
+		InputStream inputStream = ctx.getResources().openRawResource(drawableID);
+		
+		try {
+			
+			FileOutputStream out = new FileOutputStream(f);
+			
+			int len;
+			byte buf[] = new byte[1024];
+			
+			while((len = inputStream.read(buf)) > 0) out.write(buf, 0, len);
+			
+			out.close();
+			inputStream.close();
+		    
+			return Uri.fromFile(f);	
+			
+		} catch (FileNotFoundException e) {
+			
+			e.printStackTrace();
+			
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+		
+		}
+		
+		return null;
+	}
+}
