@@ -14,7 +14,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
 
-import android_libs.Storage;
+import android_libs.AndroidStorage;
 import android_libs.PhotoCamera.CameraOrientation;
 import android_libs.PhotoCamera.ConnectCameraException;
 import android_libs.PhotoCamera.EmptySizeListException;
@@ -527,7 +527,7 @@ public class Photographer {
 						
 						File picFile = null;
 
-						if (Storage.isExternalStorageWritable()) {
+						if (AndroidStorage.isExternalStorageWritable()) {
 							try {
 								picFile = File.createTempFile(CACHE_IMG_FILE_PREFIX, CACHE_IMG_FILE_EXTENSION, activity.getApplicationContext().getExternalCacheDir());
 							} catch (IOException e) {
