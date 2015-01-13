@@ -7,10 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
 
-
-/**
- * The animation utility class
- */
 class Animatility {	
 
 	public static final int DEFAULT_ANIMATION_DURATION = 800;
@@ -75,7 +71,7 @@ class Animatility {
 	 * @return
 	 * 		One Animator animating on target view's padding
 	 */
-	public static Animator getPaddingAnimation(String paddingAnimated, View v, int AnimationPaddingStart, int AnimationPaddingEnd) {
+	public static Animator getPaddingAnimator(String paddingAnimated, View v, int AnimationPaddingStart, int AnimationPaddingEnd) {
 		 
 		// It is better to set the start padding inside Animator.AnimatorListener.onAnimationStart since we do not know when the animation would starts and check input args' values.
 		// However, for a quicker dev speed and right now 
@@ -148,7 +144,62 @@ class Animatility {
 		return anim;
 	 }
 	
-	public static Animator getMarginAnimatior(String marginAnimated, View v, int startMargin, int endMargin) {
+	/**
+	 * A reusable method generating animation on margin
+	 * 
+	 * @param marginAnimated
+	 * 		The margin animated
+	 * @param v
+	 * 		The view being animated
+	 * @param startLeftMargin
+	 * 		The initial left margin
+	 * @param startTopMargin
+	 * 		The initial top margin
+	 * @param startRightMargin
+	 * 		The initial right margin
+	 * @param startBottomMargin
+	 * 		The initial bottom margin
+	 * @param endMargin
+	 * 		The margin at end of animation
+	 * @return
+	 * 		One Animator animating on target view's margin
+	 */
+	public static Animator getMarginAnimator(String marginAnimated, View v, Integer startLeftMargin, Integer startTopMargin, Integer startRightMargin, Integer startBottomMargin, int endMargin) {
+		
+		Integer startMargin = null;
+		
+		if (marginAnimated.equals("bottomMargin")) {
+			
+			startMargin = startBottomMargin;
+			
+		} else if (marginAnimated.equals("leftMargin")) {
+			
+			startMargin = startLeftMargin;
+			 
+		} else if (marginAnimated.equals("rightMargin")) {
+			
+			startMargin = startRightMargin;
+			
+		} else if (marginAnimated.equals("topMargin")) {
+			
+			startMargin = startTopMargin;
+		}
+		
+		if (startMargin == null) return null;
+		
+		ViewGroup.MarginLayoutParams fmParams = (MarginLayoutParams) v.getLayoutParams();
+		
+		if (startLeftMargin != null) fmParams.leftMargin = startLeftMargin;
+		if (startTopMargin != null) fmParams.topMargin = startTopMargin;
+		if (startRightMargin != null) fmParams.rightMargin = startRightMargin;
+		if (startBottomMargin != null) fmParams.bottomMargin = startBottomMargin;
+		
+		v.setLayoutParams(fmParams);
+		
+		return Animatility.getMarginAnimator(marginAnimated, v, startMargin, endMargin);
+	}
+	
+	public static Animator getMarginAnimator(String marginAnimated, View v, int startMargin, int endMargin) {
 		
 		final View fv = v;
 		final String fmarginAnimated = marginAnimated;
@@ -174,7 +225,7 @@ class Animatility {
 					
 					this.mParams.bottomMargin = margin;
 					
-				} else if (marginAnimated.equals("leftMaring")) {
+				} else if (marginAnimated.equals("leftMargin")) {
 					
 					this.mParams.leftMargin = margin;
 					 
@@ -197,20 +248,36 @@ class Animatility {
 			
 			fmParams.bottomMargin = startMargin;
 			
-		} else if (marginAnimated.equals("leftMaring")) {
+		} else if (marginAnimated.equals("leftMargin")) {
 			
 			fmParams.leftMargin = startMargin;
 			 
 		} else if (marginAnimated.equals("rightMargin")) {
 			
 			fmParams.rightMargin = startMargin;
-			 
 		} else {
 			
-			fmParams.topMargin = startMargin;				 
+			fmParams.topMargin = startMargin;
 		}
 		
 		v.setLayoutParams(fmParams);
+		
+		return anim;
+	}
+	
+	public static Animator getRepetitiveFlashAnimator(View v) {
+		
+		v.setAlpha(1);
+		
+		Keyframe kf0 = Keyframe.ofFloat(0.0f, 1.0f);
+		Keyframe kf1 = Keyframe.ofFloat(0.8f, 1.0f);
+		Keyframe kf2 = Keyframe.ofFloat(0.9f, 0.0f);
+		Keyframe kf3 = Keyframe.ofFloat(1.0f, 0.0f);		
+		PropertyValuesHolder alphaKeyFrames = PropertyValuesHolder.ofKeyframe("alpha", kf0, kf1, kf2, kf3);		
+		
+		ObjectAnimator anim = ObjectAnimator.ofPropertyValuesHolder(v, alphaKeyFrames);
+		anim.setDuration(2000);
+		anim.setRepeatCount(Animation.INFINITE);
 		
 		return anim;
 	}
