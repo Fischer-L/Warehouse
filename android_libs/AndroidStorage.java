@@ -79,4 +79,16 @@ public class AndroidStorage {
 		
 		return new File(privateDIR.getPath() + File.separator + filename);		
 	}
+	
+	/**
+	 * Get Android's public picture directory on external storage
+	 * 
+	 * @return
+	 * 		The path to the directory
+	 */
+	public static File getExternalPublicPictureDirectory() {
+		File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+		if (!path.exists()) path.mkdirs(); // According to Android guide, may not exist so make sure here
+		return path;
+	}
 }
