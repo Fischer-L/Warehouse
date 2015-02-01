@@ -7,7 +7,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.MarginLayoutParams;
 
-class Animatility {	
+
+/**
+ * The animation utility class
+ */
+public class Animatility {
+	
+	public static final String MARGIN_LEFT = "leftMargin";	
+	public static final String MARGIN_TOP = "topMargin";
+	public static final String MARGIN_RIGHT = "rightMargin";
+	public static final String MARGIN_BOTTOM = "bottomMargin";
+	
+	public static final String PADDING_LEFT = "paddingLeft";	
+	public static final String PADDING_TOP = "paddingTop";
+	public static final String PADDING_RIGHT = "paddingRight";
+	public static final String PADDING_BOTTOM = "paddingBottom";
 
 	public static final int DEFAULT_ANIMATION_DURATION = 800;
 	
@@ -81,15 +95,15 @@ class Animatility {
 			paddingTop = v.getPaddingTop(),
 			paddingBottom = v.getPaddingBottom();
 		 
-		if (paddingAnimated.equals("paddingLeft")) {
+		if (paddingAnimated.equals(Animatility.PADDING_LEFT)) {
 			
 			paddingLeft = AnimationPaddingStart;
 			
-		} else if (paddingAnimated.equals("paddingRight")) {
+		} else if (paddingAnimated.equals(Animatility.PADDING_RIGHT)) {
 			
 			paddingRight = AnimationPaddingStart;
 			 
-		} else if (paddingAnimated.equals("paddingTop")) {
+		} else if (paddingAnimated.equals(Animatility.PADDING_TOP)) {
 			
 			paddingTop = AnimationPaddingStart;
 			 
@@ -120,15 +134,15 @@ class Animatility {
 			
 				int padding = (Integer) anim.getAnimatedValue();
 				 
-				if (paddingAnimated.equals("paddingLeft")) {
+				if (paddingAnimated.equals(Animatility.PADDING_LEFT)) {
 					
 					paddingLeft = padding;
 					
-				} else if (paddingAnimated.equals("paddingRight")) {
+				} else if (paddingAnimated.equals(Animatility.PADDING_LEFT)) {
 					
 					paddingRight = padding;
 					 
-				} else if (paddingAnimated.equals("paddingTop")) {
+				} else if (paddingAnimated.equals(Animatility.PADDING_TOP)) {
 					
 					paddingTop = padding;
 					 
@@ -159,28 +173,28 @@ class Animatility {
 	 * 		The initial right margin
 	 * @param startBottomMargin
 	 * 		The initial bottom margin
-	 * @param endMargin
-	 * 		The margin at end of animation
+	 * @param margins
+	 * 		The margins during animation
 	 * @return
 	 * 		One Animator animating on target view's margin
 	 */
-	public static Animator getMarginAnimator(String marginAnimated, View v, Integer startLeftMargin, Integer startTopMargin, Integer startRightMargin, Integer startBottomMargin, int endMargin) {
+	public static Animator getMarginAnimator(String marginAnimated, View v, Integer startLeftMargin, Integer startTopMargin, Integer startRightMargin, Integer startBottomMargin, int... margins) {
 		
 		Integer startMargin = null;
 		
-		if (marginAnimated.equals("bottomMargin")) {
+		if (marginAnimated.equals(Animatility.MARGIN_BOTTOM)) {
 			
 			startMargin = startBottomMargin;
 			
-		} else if (marginAnimated.equals("leftMargin")) {
+		} else if (marginAnimated.equals(Animatility.MARGIN_LEFT)) {
 			
 			startMargin = startLeftMargin;
 			 
-		} else if (marginAnimated.equals("rightMargin")) {
+		} else if (marginAnimated.equals(Animatility.MARGIN_RIGHT)) {
 			
 			startMargin = startRightMargin;
 			
-		} else if (marginAnimated.equals("topMargin")) {
+		} else if (marginAnimated.equals(Animatility.MARGIN_TOP)) {
 			
 			startMargin = startTopMargin;
 		}
@@ -196,17 +210,18 @@ class Animatility {
 		
 		v.setLayoutParams(fmParams);
 		
-		return Animatility.getMarginAnimator(marginAnimated, v, startMargin, endMargin);
+		return Animatility.getMarginAnimator(marginAnimated, v, margins);
 	}
 	
-	public static Animator getMarginAnimator(String marginAnimated, View v, int startMargin, int endMargin) {
+	public static Animator getMarginAnimator(String marginAnimated, View v, int... margins) {
 		
 		final View fv = v;
 		final String fmarginAnimated = marginAnimated;
 		final ViewGroup.MarginLayoutParams fmParams = (MarginLayoutParams) v.getLayoutParams();
 		
 		// Create animator
-		ValueAnimator anim = ValueAnimator.ofInt(startMargin, endMargin);
+		ValueAnimator anim = ValueAnimator.ofInt(margins);
+		
 		
 		anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
 			
@@ -221,15 +236,15 @@ class Animatility {
 				
 				int margin = (Integer) anim.getAnimatedValue();	
 				 
-				if (marginAnimated.equals("bottomMargin")) {
+				if (marginAnimated.equals(Animatility.MARGIN_BOTTOM)) {
 					
 					this.mParams.bottomMargin = margin;
 					
-				} else if (marginAnimated.equals("leftMargin")) {
+				} else if (marginAnimated.equals(Animatility.MARGIN_LEFT)) {
 					
 					this.mParams.leftMargin = margin;
 					 
-				} else if (marginAnimated.equals("rightMargin")) {
+				} else if (marginAnimated.equals(Animatility.MARGIN_RIGHT)) {
 					
 					this.mParams.rightMargin = margin;
 					 
@@ -244,20 +259,20 @@ class Animatility {
 		});
 		 
 		// Set margin to the starting value
-		if (marginAnimated.equals("bottomMargin")) {
+		if (marginAnimated.equals(Animatility.MARGIN_BOTTOM)) {
 			
-			fmParams.bottomMargin = startMargin;
+			fmParams.bottomMargin = margins[0];
 			
-		} else if (marginAnimated.equals("leftMargin")) {
+		} else if (marginAnimated.equals(Animatility.MARGIN_LEFT)) {
 			
-			fmParams.leftMargin = startMargin;
+			fmParams.leftMargin = margins[0];
 			 
-		} else if (marginAnimated.equals("rightMargin")) {
+		} else if (marginAnimated.equals(Animatility.MARGIN_RIGHT)) {
 			
-			fmParams.rightMargin = startMargin;
+			fmParams.rightMargin = margins[0];
 		} else {
 			
-			fmParams.topMargin = startMargin;
+			fmParams.topMargin = margins[0];
 		}
 		
 		v.setLayoutParams(fmParams);
@@ -265,7 +280,7 @@ class Animatility {
 		return anim;
 	}
 	
-	public static Animator getRepetitiveFlashAnimator(View v) {
+	public static Animator getRepeativeFlashAnimator(View v) {
 		
 		v.setAlpha(1);
 		
