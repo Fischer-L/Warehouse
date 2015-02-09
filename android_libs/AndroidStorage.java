@@ -48,7 +48,7 @@ public class AndroidStorage {
 	 * @throws IOException
 	 */
 	public static File createExternalCacheFile(String prefix, String suffix, Context ctx) throws IOException {
-		return Storage.isExternalStorageWritable() ? File.createTempFile(prefix, suffix, ctx.getExternalCacheDir()) : null;
+		return AndroidStorage.isExternalStorageWritable() ? File.createTempFile(prefix, suffix, ctx.getExternalCacheDir()) : null;
 	}
 	
 	/**
@@ -67,7 +67,7 @@ public class AndroidStorage {
 	 */
 	public static File createPrivateExternalFile(String filedir, String filename, Context ctx) throws IOException {		
 		
-		if (!Storage.isExternalStorageWritable()) return null;
+		if (!AndroidStorage.isExternalStorageWritable()) return null;
 			
 		File privateDIR = new File(ctx.getExternalFilesDir(Environment.DIRECTORY_PICTURES), filedir);
 		
