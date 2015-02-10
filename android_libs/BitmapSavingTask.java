@@ -20,7 +20,7 @@ public class BitmapSavingTask extends AsyncTask<Bitmap, Void, Void> {
 	 * @param ctx
 	 * 		Activity or application context
 	 * @param dstFile
-	 * 		The destination file storing the output jpg
+	 * 		The destination file storing the output jpg. Shall not be directory.
 	 * @param listener
 	 * 		{@link BitmapSavingTask.BitmapSavingTaskListener}
 	 */
@@ -50,7 +50,7 @@ public class BitmapSavingTask extends AsyncTask<Bitmap, Void, Void> {
     	
         try {
         	
-        	if (file == null) throw new FileNotFoundException("Not specify the destination file for saving image");
+        	if (file == null || !file.isFile()) throw new FileNotFoundException("Not specify the destination file for saving image");
         	
             file.getParentFile().mkdirs();
             
