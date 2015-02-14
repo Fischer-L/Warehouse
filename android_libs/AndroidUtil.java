@@ -1,19 +1,46 @@
-package android_libs;
+package com.colorTapChallenge.externaLib;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Bitmap.Config;
+import android.graphics.Canvas;
+import android.graphics.Typeface;
 import android.os.Build;
 import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 /**
  * A class storing all kinds of helping utility
  */
 public class AndroidUtil {
+	
+	/**
+	 * Set view's font style
+	 * 
+	 * @param ctx
+	 * 		The activity or app context
+	 * @param v
+	 * 		Only can be the kind of view which is able to set font style
+	 * @param subPathToFont
+	 * 		The file name of the font data in the assets directory
+	 */
+	public static void setFontStyle(Context ctx, View v, String subPathToFont) {
+		
+		if (v instanceof TextView || v instanceof Button) {
+		
+			Typeface face = Typeface.createFromAsset(ctx.getAssets(), subPathToFont);
+			
+			if (v instanceof TextView) {				
+				((TextView) v).setTypeface(face);				
+			} else if (v instanceof Button) {
+				((Button) v).setTypeface(face);
+			}
+		}
+	}
 	
 	/**
 	 * @param ctx
