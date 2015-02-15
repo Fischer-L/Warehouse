@@ -23,21 +23,26 @@ public class AndroidUtil {
 	 * 
 	 * @param ctx
 	 * 		The activity or app context
-	 * @param v
-	 * 		Only can be the kind of view which is able to set font style
 	 * @param subPathToFont
 	 * 		The file name of the font data in the assets directory
+	 * @param views
+	 * 		Only can be the kind of view which is able to set font style
 	 */
-	public static void setFontStyle(Context ctx, View v, String subPathToFont) {
+	public static void setFontStyle(Context ctx, String subPathToFont, View... views) {		
 		
-		if (v instanceof TextView || v instanceof Button) {
+		if (views.length > 0) {
 		
 			Typeface face = Typeface.createFromAsset(ctx.getAssets(), subPathToFont);
 			
-			if (v instanceof TextView) {				
-				((TextView) v).setTypeface(face);				
-			} else if (v instanceof Button) {
-				((Button) v).setTypeface(face);
+			if (face != null) {
+			
+				for (View v : views) {
+					if (v instanceof TextView) {				
+						((TextView) v).setTypeface(face);				
+					} else if (v instanceof Button) {
+						((Button) v).setTypeface(face);
+					}
+				}
 			}
 		}
 	}
