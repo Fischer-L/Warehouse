@@ -111,11 +111,11 @@ public class AndroidUtil {
 	 * @param content
 	 * 		The content of {@link AlertDialog}. If null, no content would be set.
 	 * @param neutralBtnTitle
-	 * 		The title of neutral btn of {@link AlertDialog}. If null, no content would be set.
+	 * 		The title of neutral btn of {@link AlertDialog}. If null, no neutral btn would be set.
 	 * @param positiveBtnTitle
-	 * 		The title of positive btn of {@link AlertDialog}. If null, no content would be set.	 * 		
+	 * 		The title of positive btn of {@link AlertDialog}. If null, no positive btn would be set.	 * 		
 	 * @param negativeBtnTitle
-	 * 		The title of nagative btn of {@link AlertDialog}. If null, no content would be set.
+	 * 		The title of nagative btn of {@link AlertDialog}. If null, no nagative btn would be set.
 	 * @return
 	 */
 	public static AlertDialog mkAlertDialog(Activity activity, String title, String content, String neutralBtnTitle, String positiveBtnTitle, String negativeBtnTitle) {
