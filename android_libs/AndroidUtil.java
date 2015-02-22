@@ -2,6 +2,7 @@ package com.colorTapChallenge.externaLib;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -99,5 +100,67 @@ public class AndroidUtil {
 	    
 	    return bitmap;
 	}
+	
+	/**
+	 * Make one {@link AlertDialog}
+	 * 
+	 * @param activity
+	 * 		The activity which wants to use {@link AlertDialog}
+	 * @param title
+	 * 		The title of {@link AlertDialog}. If null, no title would be set
+	 * @param content
+	 * 		The content of {@link AlertDialog}. If null, no content would be set.
+	 * @param neutralBtnTitle
+	 * 		The title of neutral btn of {@link AlertDialog}. If null, no content would be set.
+	 * @param positiveBtnTitle
+	 * 		The title of positive btn of {@link AlertDialog}. If null, no content would be set.	 * 		
+	 * @param negativeBtnTitle
+	 * 		The title of nagative btn of {@link AlertDialog}. If null, no content would be set.
+	 * @return
+	 */
+	public static AlertDialog mkAlertDialog(Activity activity, String title, String content, String neutralBtnTitle, String positiveBtnTitle, String negativeBtnTitle) {
+		
+		AlertDialog.Builder ab = new AlertDialog.Builder(activity);
+		
+		if (title != null) ab.setTitle(title);
+		
+		if (content != null) ab.setMessage(content);
+		
+		if (neutralBtnTitle != null) ab.setNeutralButton(neutralBtnTitle, null);
+		
+		if (positiveBtnTitle != null) ab.setPositiveButton(positiveBtnTitle, null);
+		
+		if (negativeBtnTitle != null) ab.setNegativeButton(negativeBtnTitle, null);
+		
+		return ab.create();
+	}
 
+	/**
+	 * Basically equal to {@link #mkAlertDialog(Activity, String, String, String, String, String)}.
+	 * Except for using string resource id as parameter.
+	 * 
+	 * @param activity
+	 * @param titleID
+	 * @param contentID
+	 * @param neutralBtnTitleID
+	 * @param positiveBtnTitleID
+	 * @param negativeBtnTitleID
+	 * @return
+	 */
+	public static AlertDialog mkAlertDialog(Activity activity, Integer titleID, Integer contentID, Integer neutralBtnTitleID, Integer positiveBtnTitleID, Integer negativeBtnTitleID) {
+		
+		AlertDialog.Builder ab = new AlertDialog.Builder(activity);
+		
+		if (titleID != null) ab.setTitle(titleID);
+		
+		if (contentID != null) ab.setMessage(contentID);
+		
+		if (neutralBtnTitleID != null) ab.setNeutralButton(neutralBtnTitleID, null);
+		
+		if (positiveBtnTitleID != null) ab.setPositiveButton(positiveBtnTitleID, null);
+		
+		if (negativeBtnTitleID != null) ab.setNegativeButton(negativeBtnTitleID, null);
+		
+		return ab.create();
+	}
 }
