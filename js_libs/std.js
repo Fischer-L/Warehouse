@@ -2,6 +2,31 @@
  * Stuff that are often used
  *
  */
+ 
+/*	Func:
+		Format string. Fox example, formaStr("{0} can {1}.", "Bird", "fly") returns "Bird can fly"
+	Arg:
+		<STR> The 1st arg is the base string to format
+		<STR|NUM> The rest of args are values supplied into the base string
+	Return:
+		<STR> The formatted string
+*/
+formaStr = function () { // From : http://jsfiddle.net/joquery/9KYaQ/
+
+	// The string containing the format items (e.g. "{0}")
+	// will and always has to be the first argument.
+	var theString = arguments[0];
+	
+	// start with the second argument (i = 1)
+	for (var i = 1; i < arguments.length; i++) {
+		// "gm" = RegEx options for Global search (more than one instance)
+		// and for Multiline search
+		var regEx = new RegExp("\\{" + (i - 1) + "\\}", "gm");
+		theString = theString.replace(regEx, arguments[i]);
+	}
+	
+	return theString;
+};
 
 /*	Func:
 		Find out if the specified CSS classes exist in the target element's className attribute
