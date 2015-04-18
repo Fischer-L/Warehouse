@@ -105,7 +105,7 @@ function addClass(elem, newClasses) {
 		@ NG: false
 */
 function removeClass(elem, classes) {
-	var removedClasses = [];
+	var removedClasses = [],
 		thisClass = " " + elem.className + " ";
 	
 	classes = this.isStr(classes) ? classes.split(" ") : classes;
