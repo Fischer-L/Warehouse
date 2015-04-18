@@ -287,3 +287,71 @@ return {
         return this.sendXHR(method, url, data, null, null, useXML, false);
     }
 }}());
+
+/*	Func:
+		A master debug mode controller class.
+	Properties:
+		[ Private ]
+		<BOO> _flag_masterDBG = the master debug flag. If being set to true or false, would override all local debug mode flags. If undefined, would allow all local debug mode controllers to take controls.
+		<CLS> _cls_Local_DBG = the local debug mode controller class.
+	Methods:
+		[ Public ]
+		<FN> newLocDBG = new one instance of this::_cls_Local_DBG
+*/
+var cls_Master_DBG = (function () {
+	
+	/*	Properties:
+			[ Private ]
+			<BOO> __flag_locDBG = the local debig mode flag
+		Methods:
+			[ Public ]
+			> isDBG : Tell the debug mode
+			> log, warn, error = Equal to call console.log/warn/error but only works under the debug mode on.
+		-----------------------------------
+		Constructor:
+			Arg:
+				> dbg = refer to this::__flag_locDBG
+	*/
+	function _cls_Local_DBG(dbg) {
+	
+		var __flag_locDBG = !!dbg;
+		
+		/*	Return:
+				@ ON: true
+				@ OFF: false
+		*/
+		this.isDBG = function () {			
+			return (_flag_masterDBG === true || _flag_masterDBG === false) ? _flag_masterDBG : __flag_locDBG;
+		}
+	}
+			_cls_Local_DBG.prototype.log = function () {			
+				if (this.isDBG()) return window.log.apply(window, Array.prototype.slice(arguments));
+			}
+			
+			_cls_Local_DBG.prototype.warn = function () {			
+				if (this.isDBG()) return window.warn.apply(window, Array.prototype.slice(arguments));
+			}
+			
+			_cls_Local_DBG.prototype.error = function () {			
+				if (this.isDBG()) return window.error.apply(window, Array.prototype.slice(arguments));
+			}
+	
+	var _flag_masterDBG;
+	
+	/*	Arg:
+			> dbg = refer to this::_flag_masterDBG
+	*/
+	function cls_Master_DBG(dbg) {
+		_flag_masterDBG = (dbg === undefined) ? undefined : !!dbg;
+	}
+			/*	Arg:
+					> dbg = refer to this::_cls_Local_DBG
+				Return:
+					<OBJ> this::_cls_Local_DBG
+			*/
+			cls_Master_DBG.prototype.newLocDBG = function (dbg) {
+				return new _cls_Local_DBG(dbg);
+			}
+	
+	return cls_Master_DBG;			
+}());
