@@ -256,6 +256,16 @@ function isStr(target) {
 		@ OK: true
 		@ NG: false
 */
+function isNum(target) {
+	return (typeof target == "number");
+}
+
+/*	Arg:
+		<*> target = the target to test
+	Return:
+		@ OK: true
+		@ NG: false
+*/
 function isFunc(target) {
 	return (typeof target == "function");
 }
