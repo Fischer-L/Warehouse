@@ -22,20 +22,53 @@ function getIEVersion() {
 
 /*	Func: Get the windows's width and height
 	Return: {
-		<NUM> windowWidth : the width of the client window in px. If uable to find, then -1.
-		<NUM> windowHeight : the height of the client window in px. If uable to find, then -1.
+		<NUM> windowWidth : the width of the client window in px. If unable to find, then -1.
+		<NUM> windowHeight : the height of the client window in px. If unable to find, then -1.
 	}
 */
 function getWindowWH() {
+		
 	if(window.innerWidth) {
-		return {windowWidth : window.innerWidth, windowHeight: window.innerHeight};
-	} else if(document.documentElement.clientHeight) {
-		return {windowWidth : document.documentElement.clientWidth, windowHeight : document.documentElement.clientHeight};
-	} else if(document.body.clientHeight) {
-		return {windowWidth : document.body.clientHeight, windowHeight : document.body.clientHeight};
-	} else {
-		return {windowWidth : -1, windowHeight: -1};
+	
+		return {
+			windowWidth : window.innerWidth,
+			windowHeight: window.innerHeight
+		};
+		
+	} else if (document.documentElement.offsetHeight) {
+	
+		return {
+			windowWidth : document.documentElement.offsetWidth, 
+			windowHeight : document.documentElement.offsetHeight
+		};
+		
+	} else if (document.body.offsetHeight) {
+	
+		return {
+			windowWidth : document.body.offsetWidth, 
+			windowHeight : document.body.offsetHeight
+		};
+		
+	} else if (document.documentElement.clientHeight) {
+	
+		return {
+			windowWidth : document.documentElement.clientWidth, 
+			windowHeight : document.documentElement.clientHeight
+		};
+		
+	} else if (document.body.clientHeight) {
+	
+		return {
+			windowWidth : document.body.clientWidth, 
+			windowHeight : document.body.clientHeight
+		};
+		
 	}
+	
+	return {
+		windowWidth : -1,
+		windowHeight: -1
+	};
 }
 
 /*	Func:
