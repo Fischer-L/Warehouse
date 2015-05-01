@@ -190,25 +190,39 @@ function normalizeEvt(event) {
 		event.fromElement;
 		
 		// Stop the default browser action
-		event.preventDefault = function () {
-			event.returnValue = false;
-			event.isDefaultPrevented = returnTrue;
-		};
-		event.isDefaultPrevented = returnFalse;
+		if (!event.preventDefault) {
+		
+			event.preventDefault = function () {
+				
+				event.returnValue = false; // Support IE
+				
+				event.defaultPrevented = true;
+				
+				return false; // Mimic the legacy approach
+			}
+			
+			event.defaultPrevented = false;
+		}
 			
 		// Stop the event from bubbling
-		event.stopPropagation = function () {
-			event.cancelBubble = true;
-			event.isPropagationStopped = returnTrue;
-		};
-		event.isPropagationStopped = returnFalse;
+		if (!event.stopPropagation) {
+			
+			event.stopPropagation = function () {
+				event.cancelBubble = true; // Support IE
+			}
+		}
 		
 		// Stop the event from bubbling and executing other handlers
-		event.stopImmediatePropagation = function () {
-			this.isImmediatePropagationStopped = returnTrue;
-			this.stopPropagation();
-		};
-		event.isImmediatePropagationStopped = returnFalse;
+		if (!event.stopImmediatePropagation) {
+			
+			event.stopImmediatePropagation = function () {
+				// This mediation method only can stop from propagating further on but can't stop listeners attached to the same element for the same event type
+				// However this is the best we can go for.
+				// If we wanted one "real" solution, we would have to make a huge modification on the DOM event(start from add/removeEventListener).
+				// And a huge modification is not what we want here.
+				event.stopPropagation();
+			}
+		}
 		
 		// Handle mouse position
 		if (event.clientX != null) {
