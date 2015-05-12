@@ -194,6 +194,7 @@ var clockBuilder = (function () {
 		Methods:
 			[ Private ]
 			> __calibrateTicking: Calibrate the time gap between the canvas drawing time and the acutal time
+			> __reqAnimFrame: A shime for window.requestAnimationFrame
 			> __keepTicking: The method performing the task which makes the clock keep ticking
 			[ Public ]
 			> tick: Let the clock start ticking
@@ -204,34 +205,51 @@ var clockBuilder = (function () {
 	*/
 	var _cls_Clock = function (drawer) {
 		
-		var __dr = drawer;
+		var
+		__dr = drawer,
 		
-		var __now,
+		__now,
 		
-			__timer = null;
+		__timer = null,
 		
 		/*	Arg:
 				<DAT> date = the date instance
 			Return:
 				<NUM> The right time after for the next clock ticking(canvas drawing)
 		*/
-		var __calibrateTicking = function (date) {
-				var timeGap = date.getMilliseconds();
-				// If the time gap is too over, return the calibrated time for the next setTimeout
-				return (timeGap > 100) ? 1000 - timeGap : 1000 ; 
-			}
+		__calibrateTicking = function (date) {
+			var timeGap = date.getMilliseconds();
+			// If the time gap is too over, return the calibrated time for the next setTimeout
+			return (timeGap > 100) ? 1000 - timeGap : 1000 ; 
+		},
+		
+		/*	Arg: Return:
+				See window.requestAnimationFrame but for the final fallback support there is no returned value.
+		*/
+		__reqAnimFrame = (function() {
+			
+			return window.requestAnimationFrame       ||
+				   window.webkitRequestAnimationFrame ||
+				   window.mozRequestAnimationFrame    ||
+				   window.oRequestAnimationFrame      ||
+				   function (callback) {
+						callback();
+				   };
+		})(),
 		
 		/*
 		*/
-		var __keepTicking = function () {
-				// Draw this sec
-				__dr.clearAll();
-				__dr.drawTimeMarks();
-				__dr.drawHands(__now);
-				// Prepre for the next sec
-				__now = new Date(__now.getTime() + 1000);
-				__timer = setTimeout(__keepTicking, __calibrateTicking(new Date()));
-			}
+		__keepTicking = function () {
+			// Draw this sec
+			__dr.clearAll();
+			__dr.drawTimeMarks();
+			__dr.drawHands(__now);
+			// Prepre for the next sec
+			__now = new Date(__now.getTime() + 1000);
+			__timer = setTimeout(
+				function () { __reqAnimFrame(__keepTicking); }, __calibrateTicking(new Date())
+			);
+		};
    		
 		/*	Arg:
 				<DAT> [date] = the starting time. If not given, would now. In order to unify the hour/minute/second's value, use the Date instance to store these values. And the year/month/day value in the Date instance could be useful in the future.
@@ -246,7 +264,9 @@ var clockBuilder = (function () {
 				__now = new Date(__now.getTime() + timeGap);
 				
 				// Let's start ticking the clock at the right beginning of the next sec
-				__timer = setTimeout(__keepTicking, timeGap);
+				__timer = setTimeout(
+					function () { __reqAnimFrame(__keepTicking); }, timeGap
+				);
 			}
 		}
 		
