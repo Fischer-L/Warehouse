@@ -3,8 +3,8 @@
   "description": "This is my clock",
   "launch_path": "/clock.html",
   "icons": {
-    // "512": "/img/icon-512.png",
-    // "128": "/img/icon-128.png"
+    "512": "/tmp_img/icon.jpg",
+    "128": "/tmp_img/icon.jpg"
   },
   "developer": {
     "name": "fischer.json",
