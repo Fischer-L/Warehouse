@@ -216,9 +216,7 @@ var clockBuilder = (function () {
 				<NUM> The right time after for the next clock ticking(canvas drawing)
 		*/
 		var __calibrateTicking = function (date) {
-				var timeGap = date.getMilliseconds();
-				// If the time gap is too over, return the calibrated time for the next setTimeout
-				return (timeGap > 100) ? 1000 - timeGap : 1000 ; 
+				return 1000 - date.getMilliseconds();
 			}
 		
 		/*
@@ -237,7 +235,8 @@ var clockBuilder = (function () {
 				<DAT> [date] = the starting time. If not given, would now. In order to unify the hour/minute/second's value, use the Date instance to store these values. And the year/month/day value in the Date instance could be useful in the future.
 		*/
 		this.tick = function (date) {
-			if (__timer === null) { // Prevent double calling the tick method while already being ticking				
+			if (__timer === null) { // Prevent double calling the tick method while already being ticking
+				
 				__now = (date instanceof Date) ? date : new Date;
 				
 				var timeGap = __calibrateTicking(__now);

@@ -1,0 +1,14 @@
+{
+  "name": "My Clock",
+  "description": "This is my clock",
+  "launch_path": "/clock.html",
+  "icons": {
+    // "512": "/img/icon-512.png",
+    // "128": "/img/icon-128.png"
+  },
+  "developer": {
+    "name": "fischer.json",
+    "url": "https://github.com/Fischer-L"
+  },
+  "default_locale": "en"
+}
