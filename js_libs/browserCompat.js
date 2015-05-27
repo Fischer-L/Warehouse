@@ -288,23 +288,25 @@ function rmEvent(elem, evt, eHandle) {
 }
 
 /*	Arg:
-		<*> target = the target to test
+		<*> v = the value to test
 	Return:
 		@ OK: true
 		@ NG: false
 */
-function isStr(target) {
-	return (typeof target == "string");
+function isStr(v) {
+	return (typeof v === "string") || (v instanceof String);
 }
 
-/*	Arg:
-		<*> target = the target to test
+/*	Func:
+		This is to check if value could be used as number so values like "1" or " 3.14" would be valid in checking
+	Arg:
+		<*> v = the value to test
 	Return:
 		@ OK: true
 		@ NG: false
 */
-function isNum(target) {
-	return (typeof target == "number");
+function isNum(v) {
+	return !isNaN(parseFloat(v)) && isFinite(v);
 }
 
 /*	Arg:
