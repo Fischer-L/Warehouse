@@ -287,6 +287,25 @@ function rmEvent(elem, evt, eHandle) {
 	}
 }
 
+/*	Func:
+		Strictly compare two variables
+	Arg:
+		<*> a, b = the variable to compare
+	Return:
+		@ Equal: true
+		@ Not equal: false
+*/
+function is(a, b) { // Ref : React.js
+
+	// NaN
+	if (a !== a) return b !== b;
+	
+	// +-0
+	if (a === 0 && b === 0) return 1/a === 1/b;
+	
+	return a === b;
+}
+
 /*	Arg:
 		<*> v = the value to test
 	Return:
