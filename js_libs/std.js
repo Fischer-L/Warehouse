@@ -308,6 +308,7 @@ var cls_Master_DBG = (function () {
 			[ Public ]
 			> isDBG : Tell the debug mode
 			> prependTag : prepend this::__tag before logging msg
+			> test : Execute the testing behavior function if under the DBG mode
 			> log, warn, error = Equal to call console.log/warn/error but only works under the debug mode on.
 		-----------------------------------
 		Constructor:
@@ -350,6 +351,10 @@ var cls_Master_DBG = (function () {
 			
 			_cls_Local_DBG.prototype.error = function () {			
 				if (this.isDBG()) return window.error.apply(window, this.prependTag(arguments));
+			}
+			
+			_cls_Local_DBG.prototype.test = function (behavior) {			
+				if (this.isDBG() && typeof behavior === "funciton") behavior();
 			}
 	
 	var _flag_masterDBG;
