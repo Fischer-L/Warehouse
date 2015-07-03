@@ -302,19 +302,23 @@ var cls_Master_DBG = (function () {
 	
 	/*	Properties:
 			[ Private ]
+			<STR> __tag = the tag always prepended before logs
 			<BOO> __flag_locDBG = the local debig mode flag
 		Methods:
 			[ Public ]
 			> isDBG : Tell the debug mode
+			> prependTag : prepend this::__tag before logging msg
 			> log, warn, error = Equal to call console.log/warn/error but only works under the debug mode on.
 		-----------------------------------
 		Constructor:
 			Arg:
 				> dbg = refer to this::__flag_locDBG
 	*/
-	function _cls_Local_DBG(dbg) {
+	function _cls_Local_DBG(dbg, tag) {
 	
-		var __flag_locDBG = !!dbg;
+		var
+		__tag = tag || null,
+		__flag_locDBG = !!dbg;
 		
 		/*	Return:
 				@ ON: true
@@ -323,17 +327,29 @@ var cls_Master_DBG = (function () {
 		this.isDBG = function () {			
 			return (_flag_masterDBG === true || _flag_masterDBG === false) ? _flag_masterDBG : __flag_locDBG;
 		}
-	}
+		/*	Arg:
+				<ARR|ARGS> the function's hidden arguments or array
+			Return:
+				<ARR> the new array
+		*/
+		this.prependTag = function (args) {
+			if (!(args instanceof Array)) args = Array.prototype.slice(args);
+			
+			args[0] = __tag + " :: " + args[0];
+		
+			return args;
+		}
+	}		
 			_cls_Local_DBG.prototype.log = function () {			
-				if (this.isDBG()) return window.log.apply(window, Array.prototype.slice(arguments));
+				if (this.isDBG()) return window.log.apply(window, this.prependTag(arguments));
 			}
 			
 			_cls_Local_DBG.prototype.warn = function () {			
-				if (this.isDBG()) return window.warn.apply(window, Array.prototype.slice(arguments));
+				if (this.isDBG()) return window.warn.apply(window, this.prependTag(arguments));
 			}
 			
 			_cls_Local_DBG.prototype.error = function () {			
-				if (this.isDBG()) return window.error.apply(window, Array.prototype.slice(arguments));
+				if (this.isDBG()) return window.error.apply(window, this.prependTag(arguments));
 			}
 	
 	var _flag_masterDBG;
