@@ -215,36 +215,39 @@ var scrollTo = (function () {
 
 /*	Properties:
 		[ Private ]
-		<OBJ> _xhr = the XHR obj
+		<ARR> _xhrFactories = the available XHR factories
 	Method:
 		[ Public ]
+		> getXHR : Get the XHR obj for use
        		> send : function (method, url, data, okCallback, errCallback, useXML, async) : Send a xhr, default is asynchronous
        		> sendSync : function (method, url, data, useXML) : Send a synchronous xhr.
 */
 var xhr = (function () {
-	var _xhr = null;
+	var 
+	_xhrFactories = [
+	    function () {return new XMLHttpRequest();},
+	    function () {return new ActiveXObject("Msxml2.XMLHTTP");},
+	    function () {return new ActiveXObject("Msxml3.XMLHTTP");},
+	    function () {return new ActiveXObject("Microsoft.XMLHTTP");}
+        ];
 return {
+   /*  Return:
+       	      @ OK: <OBJ> the XHR obj
+       	      @ NG: null
+   */
    getXHR : function () {
-       if (!_xhr) {
-	       try {
-	           _xhr = new XMLHttpRequest();	    
-	       } catch (e) {
-		       try {
-		           _xhr = ActiveXObject("Msxml2.XMLHTTP");
-		       } catch (e) {
-			       try {
-			           _xhr = ActiveXObject("Msxml3.XMLHTTP");
-			       } catch (e) {
-				       try {
-				           _xhr = ActiveXObject("Microsoft.XMLHTTP");
-				       } catch (e) {
-				           // Sad, find nothing
-				       }
-			       }
-		       }
-	       }
+       var xhr = null;
+       
+       while (_xhrFactories.length > 0) {
+           try {
+           	xhr = _xhrFactories[0];
+           	break;
+           } catch (e) {
+           	_xhrFactories.shift(); // Kick out the useless factory
+           }
        }
-       return _xhr;
+       
+       return xhr;
    },
    /*   Arg:
     *       <STR> method = "post" | "get"
@@ -264,7 +267,7 @@ return {
     */
     send : function (method, url, data, okCallback, errCallback, useXML, async) {
         // Innitailize the Ajax request first
-        var xhr = window.XMLHttpRequest ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+        var xhr = this.getXHR();
         async = (async === false) ? false : true;
 		
         // Register the callbacks for the asynchronous request
