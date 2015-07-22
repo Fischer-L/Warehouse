@@ -213,13 +213,39 @@ var scrollTo = (function () {
 	}
 }());
 
-/*	Method:
+/*	Properties:
+		[ Private ]
+		<OBJ> _xhr = the XHR obj
+	Method:
 		[ Public ]
        		> send : function (method, url, data, okCallback, errCallback, useXML, async) : Send a xhr, default is asynchronous
        		> sendSync : function (method, url, data, useXML) : Send a synchronous xhr.
 */
 var xhr = (function () {
-return {    
+	var _xhr = null;
+return {
+   getXHR : function () {
+       if (!_xhr) {
+	       try {
+	           _xhr = new XMLHttpRequest();	    
+	       } catch (e) {
+		       try {
+		           _xhr = ActiveXObject("Msxml2.XMLHTTP");
+		       } catch (e) {
+			       try {
+			           _xhr = ActiveXObject("Msxml3.XMLHTTP");
+			       } catch (e) {
+				       try {
+				           _xhr = ActiveXObject("Microsoft.XMLHTTP");
+				       } catch (e) {
+				           // Sad, find nothing
+				       }
+			       }
+		       }
+	       }
+       }
+       return _xhr;
+   },
    /*   Arg:
     *       <STR> method = "post" | "get"
     *       <STR> url = the target url of the scsvr
