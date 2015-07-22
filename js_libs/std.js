@@ -414,12 +414,12 @@ return {
           
           xhr.send(data);
           
-        catch (e) {
-          errCallback(e);
+        catch (err) {
+          errCallback(err);
         }
       } else {
         
-        return new Error("Fail to open XHR request");
+        return new Error(e);
       }
     }
 
