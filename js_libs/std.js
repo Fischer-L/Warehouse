@@ -277,98 +277,173 @@ var scrollTo = (function () {
        		> sendSync : function (method, url, data, useXML) : Send a synchronous xhr.
 */
 var xhr = (function () {
-	var 
-	_xhrFactories = [
-	    function () {return new XMLHttpRequest();},
-	    function () {return new ActiveXObject("Msxml2.XMLHTTP");},
-	    function () {return new ActiveXObject("Msxml3.XMLHTTP");},
-	    function () {return new ActiveXObject("Microsoft.XMLHTTP");}
-        ];
+  var 
+  _xhrFactories = [
+    function () {return new XMLHttpRequest();},
+    function () {return new ActiveXObject("Msxml2.XMLHTTP");},
+    function () {return new ActiveXObject("Msxml3.XMLHTTP");},
+    function () {return new ActiveXObject("Microsoft.XMLHTTP");}
+  ];
 return {
-   /*  Return:
-       	      @ OK: <OBJ> the XHR obj
-       	      @ NG: null
-   */
-   getXHR : function () {
-       var xhr = null;
-       
-       while (_xhrFactories.length > 0) {
-           try {
-           	xhr = _xhrFactories[0];
-           	break;
-           } catch (e) {
-           	_xhrFactories.shift(); // Kick out the useless factory
-           }
-       }
-       
-       return xhr;
-   },
-   /*   Arg:
-    *       <STR> method = "post" | "get"
-    *       <STR> url = the target url of the scsvr
-    *       <STR> data = the arguments and data to pass to the scsvr
-    *       <FN> [okCallback] = the callback to call when succeeding
-    *       <FN> [errCallback] = the callback to call when failing
-    *       <BOO> [useXML] = true | false; use the xhr.reponseXML instead of hr.reponseText
-    *       <BOO> [async] (default: true) = true | false; use the asynchronous request or not
-    *   Return:
-    *       >   For the async mode :
-    *            -  OK: true by default | depending on the okCallback
-    *            -  NG(including the unknow method): false by default | denpending on the errCallback
-    *       >   For the sync mode :
-    *            -  OK: the xhr response
-    *            -  NG(including the unknow method): false
-    */
-    send : function (method, url, data, okCallback, errCallback, useXML, async) {
-        // Innitailize the Ajax request first
-        var xhr = this.getXHR();
-        async = (async === false) ? false : true;
-		
-        // Register the callbacks for the asynchronous request
-        if (async === true) {
-            okCallback = (typeof okCallback === "function") ? okCallback : 
-					function (response) { return true; } // If no okCallback inputed, take the stadard function.
-            errCallback = (typeof errCallback === "function") ? errCallback :
-                    function () { return false; } // The same reason as the okCallback above
-            
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4) {
-                    if (xhr.status == 200) {
-						var response = (useXML) ? xhr.responseXML : xhr.responseText;
-						return okCallback(response);
-                    } else { return errCallback(); }
-                }
-            }
-        }
-        // Send the xhr
-        switch (method.toLowerCase() ) {
-            case "get":
-                url = url + "?" + data;
-                data = null;
-                xhr.open(method, url, async);
-            break;
-            case "post":
-                xhr.open(method, url, async);
-                xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-            break;
-            default: return false;
-        }
-        xhr.send(data);
-        
-        // To handle the synchronous request
-        if (async === false) {
-            if (xhr.readyState == 4 && xhr.status == 200) {
-				return (useXML) ? xhr.responseXML : xhr.responseText;
-            } else { return false; }
-        }
-   },
-   
-   /*   Arg: refer to this.sendXHR
-    *   Return: refer to the sync mode of this.sendXHR.
-    */
-   sendSync : function (method, url, data, useXML) {
-        return this.sendXHR(method, url, data, null, null, useXML, false);
+  /*  Return:
+        @ OK: <OBJ> the XHR obj
+        @ NG: null
+  */
+  getXHR : function () {
+    var xhr = null;
+
+    while (_xhrFactories.length > 0) {
+      try {
+        xhr = _xhrFactories[0];
+        break;
+      } catch (e) {
+        _xhrFactories.shift(); // Kick out the useless factory
+      }
     }
+
+    return xhr;
+  },
+  /*   Arg:
+   *      <STR> method = "post" | "get"
+   *      <STR> url = the target url of the scsvr
+   *      <STR> data = the arguments and data to pass to the scsvr
+   *      <FN> [okCallback] = the callback to call in asycn mode when succeeding. The 1st ar would be the response
+   *      <FN> [errCallback] = the callback to call in asycn mode when failing. The 1st arg would be an Error obj with error reason
+   *      <OBJ> [configs] = {
+   *               <BOO> [async] = true (default) | false; use the asynchronous request or not
+   *               <BOO> [useXML] = true | false; use the xhr.reponseXML instead of hr.reponseText
+   *            }
+   *   Return:
+   *      > For the async mode:
+   *          No return but call the okCallback or errCallback
+   *      > For the sync mode :
+   *          @ OK: <STR> the xhr response
+   *          @ NG (including the unknow method): <Error> an Error obj with error reason 
+   */
+  send : function (method, url, data, okCallback, errCallback, configs) {
+  
+    var async,  xhr = this.getXHR();    
+    
+    if (typeof okCallback !== "function") okCallback = function () {};
+    if (typeof errCallback !== "function") errCallback = function () {};
+    
+    if (!(configs instanceof Object)) configs = {};    
+    async = (configs.async === false) ? false : true;
+    
+    if (async === true) { // Handle the response and register the callbacks for the asynchronous request    
+      
+      xhr.onreadystatechange = function () {
+        
+        try {
+
+          if (xhr.readyState == 4) {
+            
+            if (xhr.status == 200) {
+              
+              var response = configs.useXML ? xhr.responseXML : xhr.responseText;
+              
+              okCallback(response);
+              
+            } else if (400 <= xhr.status && xhr.status < 600) {
+              
+              errCallback(new Error("HTTP status : " + xhr.status));
+              
+            } else {
+              // IE will return a status 12000+ on some sort of connection failure,
+              // so we return a blank error
+              // http://msdn.microsoft.com/en-us/library/aa383770%28VS.85%29.aspx
+              callback(new Error("Unknown IE error"));            
+            }            
+          }
+          
+        } catch (e) {
+          // Firefox may error out while accessing the request members if there is a network error
+          // https://github.com/jquery/jquery/blob/a938d7b1282fc0e5c52502c225ae8f0cef219f0a/src/ajax/xhr.js#L111
+           errCallback(e);
+        }
+      }      
+    }
+    
+    try {  // Send the xhr
+      switch (method.toLowerCase()) {
+      
+        case "get":
+            url = url + "?" + data;
+            data = null;
+            xhr.open(method, url, async);
+        break;
+        
+        case "post":
+            xhr.open(method, url, async);
+            xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        break;
+        
+        default:
+          var e = new Error("Unknown method " + method);
+          if (async) {
+            errCallback(e);
+            return;
+          }
+          return e;
+      }
+      xhr.send(data);
+      
+    } catch (e) { // Sending using the normal xmlhttprequest object didn't work, try XDomainRequest
+    
+      if (async && typeof XDomainRequest == "function") {
+        
+        try {
+        
+          xhr = new XDomainRequest();
+          
+          xhr.onprogress = function() {};
+          
+          xhr.ontimeout = function() {
+            callback(new Error("XDomainRequest timeout"));
+          };
+          
+          xhr.onerror = function() {
+            callback(new Error("XDomainRequest error"));
+          };
+          
+          xhr.onload= function(args) {
+            okCallback(xhr.responseText);
+          };
+          
+          xhr.open(method, url);
+          
+          xhr.send(data);
+          
+        catch (e) {
+          errCallback(e);
+        }
+      } else {
+        
+        return new Error("Fail to open XHR request");
+      }
+    }
+
+    // To handle the synchronous request
+    if (async === false) {
+      if (xhr.readyState == 4 && xhr.status == 200) {
+        return configs.useXML ? xhr.responseXML : xhr.responseText;
+      } else { 
+        return new Error("HTTP status : " + xhr.status);
+      }
+    }
+  },
+
+  /*   Arg: refer to this.sendXHR
+   *   Return: refer to the sync mode of this.sendXHR.
+  */
+  sendSync : function (method, url, data, configs) {
+    
+    if (!(configs instanceof Object)) configs = {};
+    
+    configs.async = false;
+    
+    return this.send(method, url, data, null, null, configs);
+  }
 }}());
 
 /*	Func:
