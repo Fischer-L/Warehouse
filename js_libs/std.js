@@ -28,103 +28,157 @@ formaStr = function () { // From : http://jsfiddle.net/joquery/9KYaQ/
 	return theString;
 };
 
-/*	Func:
-		Find out if the specified CSS classes exist in the target element's className attribute
-	Arg:
-		<STR|ELM> target = the test target, could be the class of dom element or the dom element
-		<STR|ARR> className = classes to test in a string seperated by " " or in an array
-	Return:
-		@ Having: true
-		@ Not having: false
+/*  Desc:
+      Since the value of one element's class may be seperated by \n or \t,
+      this function makes sure the class value is seperated by " " only
+    Arg:
+      <STR|ELM> target = element or value of one element's class
+    Return:
+      @ OK: <STR> The string value of class attribute which is definitely seperated by " "
+      @ No class to trim: null
+*/
+function trimClass(target) {
+  
+  var c = "";
+  
+  if (browserCompat.js::isHTMLElem(target)) {
+    c = elem.getAttribute("class") || "";
+  } else if (browserCompat.js::isStr(target)) {
+    c = target;
+  }
+  
+  return c !== ""
+         ? c.replace(/[\n\t]/g, " ")
+         : null;
+}
+
+/*	Desc: Find out if the specified CSS classes exist in the target element's className attribute
+    Arg:
+      <STR|ELM> target = the test target, could be the dom element or the value of dom element class attribute
+      <STR|ARR> className = classes to test in a string seperated by " " or in an array
+    Return:
+      @ Having all className being tested : true
+      @ Otherwise: false
 */
 function hasClass(target, className) {
-	var has = false,
-		elemClass = this.isHTMLElem(target) ? target.className : target;
-	
-	if (typeof elemClass == "string" && elemClass) {
-		
-		className = (typeof className == "string") ? className.split(" ") : className;
-		
-		if (className instanceof Array) {
-		
-			has = true;
-			elemClass = " " + elemClass + " ";	
+  
+  var classes = trimClass(target);
+    
+  if (classes) {
+    
+    className = browserCompat.js::isStr(className) ? className.split(" ") : className;
+    
+    if (browserCompat.js::isArr(className)) {
+      
+      var i, c, has;
+      
+      classes = " " + classes + " ";      
 			
-			for (var i = 0; i < className.length; i++) {
-				if (typeof className[i] == "string") {
-					if (elemClass.search(" " + className[i] + " ") < 0) {
-						has = false;
-						break;
-					}
+			for (i = className.length - 1; i >= 0 ; --i) {
+        
+        c = className[i];
+        
+				if (browserCompat.js::isStr(c)) {
+          
+          c = " " + c + " ";
+          
+          has = classes.search(c);
+          
+          if (!has) break;
 				}
 			}
-		}
-	}
-	return has;
+    }
+  }
+  
+  return has;
 }
 
-/*	Func:
-		Add some CSS classes into one element's className attribute
-	Arg:
-		<ELM> elem = the target element which is being added classes
-		<STR|ARR> newClasseses = the new classes to add, if multiple, seperated by " " or put in an array
-	Return:
-		@ OK: the newly added classes in an array
-		@ NG: false
+/*	Desc: Add some CSS classes into one element's className attribute. If already exist, then no op.
+    Arg:
+      <ELM> elem = the target element which is being added classes
+      <STR|ARR> newClasses = the new classes to add, if multiple, seperated by " " or put in an array
+    Return:
+      @ OK: <ARR> the newly added classes in an array
+      @ NG: false
 */
 function addClass(elem, newClasses) {
-	var addedClasses = [],
-		thisClass = elem.className;
-		
-	newClasses = this.isStr(newClasses) ? newClasses.split(" ") : newClasses;
-	
-	if (this.isArr(newClasses)) {
-		for (var i = 0, j = newClasses.length; i < j; i++) {
-			if (!this.hasClass(thisClass, newClasses[i]) ) {
-				thisClass += " " + newClasses[i];
-				addedClasses.push(newClasses[i]);
-			}
-		}
-	}
-	
-	if (addedClasses.length > 0) {
-		elem.className = thisClass.trim();
-		return addedClasses;
-	} else {
-		return false;
-	}
+  
+  var addeds = [];
+  
+  newClasses = browserCompat.js::isStr(newClasses) ? newClasses.split(" ") : newClasses;
+  
+  if (browserCompat.js::isArr(newClasses) && browserCompat.js::isHTMLElem(elem)) {
+    
+    var i, c, classes = trimClass(elem);
+    
+    for (i = newClasses.length - 1; i >= 0 ; --i) {
+      
+      c = newClasses[i];
+      
+      if (browserCompat.js::isStr(c)) {
+        
+        if (!hasClass(classes, c)) {
+          
+          classes += " " + c;
+          
+          addeds.push(c);
+        }
+      }
+    }
+  }
+
+  if (addeds.length > 0) {
+    
+    elem.setAttribute("class", classes.trim());
+    
+    return addeds;
+  }
+  return false;
 }
 
-/*	Func:
-		Remove some CSS classes from one element's className attribute
-	Arg:
-		<ELM> elem = the target element whose classes are being removed
-		<STR|ARR> classes = the classes to remove, if multiple, seperated by " " or put in an array
-	Return:
-		@ OK: the removed classes in an array
-		@ NG: false
+/*	Desc: Remove some CSS classes from one element's className attribute. If not exist, then no op.
+    Arg:
+      <ELM> elem = the target element whose classes are being removed
+      <STR|ARR> className = the classes to remove, if multiple, seperated by " " or put in an array
+    Return:
+      @ OK: <ARR> the removed classes in an array
+      @ NG: false
 */
-function removeClass(elem, classes) {
-	var removedClasses = [],
-		thisClass = " " + elem.className + " ";
-	
-	classes = this.isStr(classes) ? classes.split(" ") : classes;
-	
-	if (this.isArr(classes)) {
-		for (var i = 0, j = classes.length; i < j; i++) {
-			if (this.hasClass(thisClass, classes[i]) ) {
-				thisClass = thisClass.replace(" " + classes[i] + " ", " ");
-				removedClasses.push(classes[i]);
-			}
-		}
-	}
+function removeClass(elem, className) {
 
-	if (removedClasses.length > 0) {
-		elem.className = thisClass.trim();
-		return removedClasses;
-	} else {
-		return false;
-	}
+  var removeds = [];
+
+  className = browserCompat.js::isStr(className) ? className.split(" ") : className;
+  
+  if (browserCompat.js::isArr(className) && browserCompat.js::isHTMLElem(elem)) {
+    
+    var classes = trimClass(elem);
+    
+    if (classes) {
+      
+      var i, c, classes = trimClass(elem);
+      
+      for (i = className.length - 1; i >= 0 ; --i) {
+      
+        c = className[i];
+        
+        if (hasClass(classes, c)) {
+          
+          classes = classes.replace(" " + c + " ", " ");
+          
+          removeds.push(c);
+        }
+      }
+    }
+  }
+  
+  if (removeds.length > 0) {
+      
+    elem.setAttribute("class", classes.trim());
+    
+    return removeds;
+  }
+  return false;
 }
 
 /*	Func:
