@@ -32,7 +32,7 @@ _KEY_PROP.RIGHT.keyIdentifier = 'Right';
 _KEY_PROP.RIGHT.which =
 _KEY_PROP.RIGHT.keyCode = 39;
 
-keyEventFactory.KEY = {}
+keyEventFactory.KEY = {
   UP : 'UP',
   DOWN : 'DOWN',
   LEFT : 'LEFT',
