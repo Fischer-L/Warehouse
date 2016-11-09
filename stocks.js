@@ -179,10 +179,10 @@ win.stocks = {
 				ratio = shortTermGap / longTermGap;
 			} else if (longTermGap > 0 && shortTermGap < 0) {
 				color = "green";
-				ratio = -1 * shortTermGap / longTermGap;
+				ratio = -1 * shortTermGap / (longTermGap - shortTermGap);
 			} else if (longTermGap < 0 && shortTermGap > 0) {
 				color = "red";
-				ratio = -1 * (shortTermGap - longTermGap) / longTermGap;
+				ratio = -1 * shortTermGap / (longTermGap - shortTermGap);
 			} else if (longTermGap < 0 && shortTermGap < 0) {
 				color = "green";
 				ratio = shortTermGap / longTermGap;
