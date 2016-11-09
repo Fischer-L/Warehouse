@@ -32,7 +32,6 @@ win.stocks = {
 	analyze: function (monthlyList, weeklyList, dailyList) {
 		this._analyze(
 			monthlyList.buy, 
-			monthlyList.sell, 
 			weeklyList.buy, 
 			weeklyList.sell, 
 			dailyList.buy, 
@@ -69,7 +68,7 @@ win.stocks = {
 	},
 
 	generateMonthlyReport: function (monthlyBuySide, weeklyBuySide, weeklySellSide, dailyBuySide, dailySellSide) {
-		var table = this.createMonthlyTable();
+		var table = this._createMonthlyTable();
 		for (let [agency, monData] of monthlyBuySide) {
 			var monGap = " ", monPrice = " ", weekGap = " ", weekPrice = " ", dayGap = " ", dayPrice = " ";
 
@@ -94,7 +93,7 @@ win.stocks = {
 	},
 
 	generateWeeklyReport: function (weeklyBuySide, dailyBuySide, dailySellSide) {
-		var table = this.createWeeklyTable();
+		var table = this._createWeeklyTable();
 		for (let [agency, weekData] of weeklyBuySide) {
 			var weekGap = " ", weekPrice = " ", dayGap = " ", dayPrice = " ";
 
@@ -118,7 +117,7 @@ win.stocks = {
 		return map;	
 	},
 
-	createWeeklyTable: function () {
+	_createWeeklyTable: function () {
 		var div = document.createElement("DIV");
 		div.innerHTML = this._weeklylyTmplt;
 
@@ -128,24 +127,18 @@ win.stocks = {
 			tr.innerHTML = `
 				<td style="padding: 5px 20px;">${agency}</td>
 				<td style="padding: 5px 20px;">${weekGap}</td>
-				<td style="padding: 5px 20px;">${weekPrice}</td>
+				<td style="padding: 5px 20px; border-right: 1px dotted #555;">${weekPrice}</td>
 				<td style="padding: 5px 20px;">${dayGap}</td>
-				<td style="padding: 5px 20px;">${dayPrice}</td>
+				<td style="padding: 5px 20px; border-right: 1px dotted #555;">${dayPrice}</td>
 				<td style="padding: 5px 20px;" class="weekDayRatio"></td>
 			`;
-			var td;
-			var weekDayRatio = (dayGap !== " " && weekGap !== " ") ? dayGap / weekGap : " ";
-			if (weekDayRatio !== " ") {
-				td = tr.querySelector(".weekDayRatio");
-				td.innerHTML = weekDayRatio * 100.0;
-				td.style.color = dayGap > 0 ? "red" : "green";
-			}
+			win.stocks._formatRatioCell(tr, ".weekDayRatio", weekGap, dayGap);
 			this.appendChild(tr);
 		};
 		return table;
 	},
 
-	createMonthlyTable: function () {
+	_createMonthlyTable: function () {
 		var div = document.createElement("DIV");
 		div.innerHTML = this._monthlyTmplt;
 
@@ -155,49 +148,62 @@ win.stocks = {
 			tr.innerHTML = `
 				<td style="padding: 5px 20px;">${agency}</td>
 				<td style="padding: 5px 20px;">${monGap}</td>
-				<td style="padding: 5px 20px;">${monPrice}</td>
+				<td style="padding: 5px 20px; border-right: 1px dotted #555;">${monPrice}</td>
 				<td style="padding: 5px 20px;">${weekGap}</td>
-				<td style="padding: 5px 20px;">${weekPrice}</td>
-				<td style="padding: 5px 20px;" class="monWeekRatio"></td>
+				<td style="padding: 5px 20px; border-right: 1px dotted #555;">${weekPrice}</td>
+				<td style="padding: 5px 20px; border-right: 1px dotted #555;" class="monWeekRatio"></td>
 				<td style="padding: 5px 20px;">${dayGap}</td>
-				<td style="padding: 5px 20px;">${dayPrice}</td>
-				<td style="padding: 5px 20px;" class="weekDayRatio"></td>
+				<td style="padding: 5px 20px; border-right: 1px dotted #555;">${dayPrice}</td>
+				<td style="padding: 5px 20px; border-right: 1px dotted #555;" class="weekDayRatio"></td>
 				<td style="padding: 5px 20px;" class="monDayRatio"></td>
 			`;
-			var td;
-			var monWeekRatio = (monGap !== " " && weekGap !== " ") ? weekGap / monGap : " ";
-			if (monWeekRatio !== " ") {
-				td = tr.querySelector(".monWeekRatio");
-				td.innerHTML = monWeekRatio * 100.0;
-				td.style.color = weekGap > 0 ? "red" : "green";
+			var arr = [
+				[".monWeekRatio", monGap, weekGap],
+				[".weekDayRatio", weekGap, dayGap],
+				[".monDayRatio", monGap, dayGap]
+			];
+			for (let [css, longTermGap, shortTermGap] of arr) {
+				win.stocks._formatRatioCell(tr, css, longTermGap, shortTermGap);
 			}
-			var weekDayRatio = (dayGap !== " " && weekGap !== " ") ? dayGap / weekGap : " ";
-			if (weekDayRatio !== " ") {
-				td = tr.querySelector(".weekDayRatio");
-				td.innerHTML = weekDayRatio * 100.0;
-				td.style.color = dayGap > 0 ? "red" : "green";
-			}
-			var monDayRatio = (dayGap !== " " && monGap !== " ") ? dayGap / monGap : " ";
-			if (monDayRatio !== " ") {
-				td = tr.querySelector(".monDayRatio");
-				td.innerHTML = monDayRatio * 100.0;
-				td.style.color = dayGap > 0 ? "red" : "green";
-			}
+
 			this.appendChild(tr);
 		};
 		return table;
+	},
+
+	_formatRatioCell: function (tr, css, longTermGap, shortTermGap) {
+		if (longTermGap !== " " && shortTermGap !== " ") {
+			var td, ratio, color;
+			if (longTermGap > 0 && shortTermGap > 0) {
+				color = "red";
+				ratio = shortTermGap / longTermGap;
+			} else if (longTermGap > 0 && shortTermGap < 0) {
+				color = "green";
+				ratio = -1 * shortTermGap / longTermGap;
+			} else if (longTermGap < 0 && shortTermGap > 0) {
+				color = "red";
+				ratio = -1 * (shortTermGap - longTermGap) / longTermGap;
+			} else if (longTermGap < 0 && shortTermGap < 0) {
+				color = "green";
+				ratio = shortTermGap / longTermGap;
+			}
+
+			td = tr.querySelector(css);
+			td.style.color = color;
+			td.innerHTML = ratio * 100.0;
+		}
 	},
 
 	_weeklylyTmplt:`
 		<table style="margin: 20px;">
 			<caption>Weekly - Daily</caption>
 			<thead>
-				<th>券商</th>
-				<th>週買賣超</th>
-				<th>週均價</th>
-				<th>日買賣超</th>
-				<th>日均價</th>
-				<th>週日買賣超%</th>
+				<th style="text-align:center;">券商</th>
+				<th style="text-align:center;">週買賣超</th>
+				<th style="text-align:center;">週均價</th>
+				<th style="text-align:center;">日買賣超</th>
+				<th style="text-align:center;">日均價</th>
+				<th style="text-align:center;">週日買賣超%</th>
 			</thead>
 			<tbody>
 			</tbody>
@@ -208,16 +214,16 @@ win.stocks = {
 		<table style="margin: 20px;">
 			<caption>Monthly - Weekly - Daily</caption>
 			<thead>
-				<th>券商</th>
-				<th>月買賣超</th>
-				<th>月均價</th>
-				<th>週買賣超</th>
-				<th>週均價</th>
-				<th>月週買賣超%</th>
-				<th>日買賣超</th>
-				<th>日均價</th>
-				<th>週日買賣超%</th>
-				<th>月日買賣超%</th>
+				<th style="text-align:center;">券商</th>
+				<th style="text-align:center;">月買賣超</th>
+				<th style="text-align:center;">月均價</th>
+				<th style="text-align:center;">週買賣超</th>
+				<th style="text-align:center;">週均價</th>
+				<th style="text-align:center;">月週買賣超%</th>
+				<th style="text-align:center;">日買賣超</th>
+				<th style="text-align:center;">日均價</th>
+				<th style="text-align:center;">週日買賣超%</th>
+				<th style="text-align:center;">月日買賣超%</th>
 			</thead>
 			<tbody>
 			</tbody>
