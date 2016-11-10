@@ -32,6 +32,7 @@ win.stocks = {
 	analyze: function (monthlyList, weeklyList, dailyList) {
 		this._analyze(
 			monthlyList.buy, 
+			monthlyList.sell, 
 			weeklyList.buy, 
 			weeklyList.sell, 
 			dailyList.buy, 
@@ -39,19 +40,13 @@ win.stocks = {
 		);
 	},
 
-	_analyze: function (monthlyBuyArray, weeklyBuyArray, weeklySellArray, dailyBuyArray, dailySellArray) {
-		var monthlyReport = this.generateMonthlyReport(
-			this.createMapFromArray(monthlyBuyArray),
-			this.createMapFromArray(weeklyBuyArray),
-			this.createMapFromArray(weeklySellArray),
-			this.createMapFromArray(dailyBuyArray),
-			this.createMapFromArray(dailySellArray)
-		);
-		var weeklylyReport = this.generateWeeklyReport(
-			this.createMapFromArray(weeklyBuyArray),
-			this.createMapFromArray(dailyBuyArray),
-			this.createMapFromArray(dailySellArray)
-		);
+	_analyze: function (monthlyBuyArray, monthlySellArray, weeklyBuyArray, weeklySellArray, dailyBuyArray, dailySellArray) {
+		var	monthlyBuySide  = this.createMapFromArray(monthlyBuyArray),
+			monthlySellSide = this.createMapFromArray(monthlySellArray),
+			weeklyBuySide   = this.createMapFromArray(weeklyBuyArray),
+			weeklySellSide  = this.createMapFromArray(weeklySellArray),
+			dailyBuySide    = this.createMapFromArray(dailyBuyArray),
+			dailySellSide   = this.createMapFromArray(dailySellArray);
 		var div = document.createElement("DIV");
 		div.style = `
 			background: #fff;
@@ -62,14 +57,40 @@ win.stocks = {
 			width: 100%;
 			height: 1000%;
 		`;
-		div.appendChild(monthlyReport);
-		div.appendChild(weeklylyReport);
+		div.appendChild(this.generateMonthlyReport(
+			"Buy",
+			monthlyBuySide,
+			weeklyBuySide,
+			weeklySellSide,
+			dailyBuySide,
+			dailySellSide
+		));
+		div.appendChild(this.generateWeeklyReport(
+			"Buy",
+			weeklyBuySide,
+			dailyBuySide,
+			dailySellSide
+		));
+		div.appendChild(this.generateMonthlyReport(
+			"Sell",
+			monthlySellSide,
+			weeklyBuySide,
+			weeklySellSide,
+			dailyBuySide,
+			dailySellSide
+		));
+		div.appendChild(this.generateWeeklyReport(
+			"Sell",
+			weeklySellSide,
+			dailyBuySide,
+			dailySellSide
+		));
 		document.body.appendChild(div);
 	},
 
-	generateMonthlyReport: function (monthlyBuySide, weeklyBuySide, weeklySellSide, dailyBuySide, dailySellSide) {
-		var table = this._createMonthlyTable();
-		for (let [agency, monData] of monthlyBuySide) {
+	generateMonthlyReport: function (side, monthlySide, weeklyBuySide, weeklySellSide, dailyBuySide, dailySellSide) {
+		var table = this._createMonthlyTable(side);
+		for (let [agency, monData] of monthlySide) {
 			var monGap = " ", monPrice = " ", weekGap = " ", weekPrice = " ", dayGap = " ", dayPrice = " ";
 
 			monGap = monData.gap;
@@ -92,9 +113,9 @@ win.stocks = {
 		return table;
 	},
 
-	generateWeeklyReport: function (weeklyBuySide, dailyBuySide, dailySellSide) {
-		var table = this._createWeeklyTable();
-		for (let [agency, weekData] of weeklyBuySide) {
+	generateWeeklyReport: function (side, weeklySide, dailyBuySide, dailySellSide) {
+		var table = this._createWeeklyTable(side);
+		for (let [agency, weekData] of weeklySide) {
 			var weekGap = " ", weekPrice = " ", dayGap = " ", dayPrice = " ";
 
 			weekGap = weekData.gap;
@@ -117,7 +138,7 @@ win.stocks = {
 		return map;	
 	},
 
-	_createWeeklyTable: function () {
+	_createWeeklyTable: function (side) {
 		var div = document.createElement("DIV");
 		div.innerHTML = this._weeklylyTmplt;
 
@@ -135,10 +156,12 @@ win.stocks = {
 			win.stocks._formatRatioCell(tr, ".weekDayRatio", weekGap, dayGap);
 			this.appendChild(tr);
 		};
+		var caption = table.querySelector("caption");
+		caption.innerHTML = side + " : " + caption.innerHTML;
 		return table;
 	},
 
-	_createMonthlyTable: function () {
+	_createMonthlyTable: function (side) {
 		var div = document.createElement("DIV");
 		div.innerHTML = this._monthlyTmplt;
 
@@ -168,6 +191,8 @@ win.stocks = {
 
 			this.appendChild(tr);
 		};
+		var caption = table.querySelector("caption");
+		caption.innerHTML = side + " : " + caption.innerHTML;
 		return table;
 	},
 
@@ -203,7 +228,7 @@ win.stocks = {
 				<th style="text-align:center;">週均價</th>
 				<th style="text-align:center;">日買賣超</th>
 				<th style="text-align:center;">日均價</th>
-				<th style="text-align:center;">週日買賣超%</th>
+				<th style="text-align:center;">日週買賣超%</th>
 			</thead>
 			<tbody>
 			</tbody>
@@ -219,11 +244,11 @@ win.stocks = {
 				<th style="text-align:center;">月均價</th>
 				<th style="text-align:center;">週買賣超</th>
 				<th style="text-align:center;">週均價</th>
-				<th style="text-align:center;">月週買賣超%</th>
+				<th style="text-align:center;">週月買賣超%</th>
 				<th style="text-align:center;">日買賣超</th>
 				<th style="text-align:center;">日均價</th>
-				<th style="text-align:center;">週日買賣超%</th>
-				<th style="text-align:center;">月日買賣超%</th>
+				<th style="text-align:center;">日週買賣超%</th>
+				<th style="text-align:center;">日月買賣超%</th>
 			</thead>
 			<tbody>
 			</tbody>
