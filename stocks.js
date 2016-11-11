@@ -145,13 +145,14 @@ win.stocks = {
 		var table = div.querySelector("table");
 		table.appendStock = function (agency, weekGap, weekPrice, dayGap, dayPrice) {
 			var tr = document.createElement("TR");
+			var borderBtm = this.querySelectorAll("tr").length == 8 ? "border-bottom: 1px dotted #555;" : "";
 			tr.innerHTML = `
-				<td style="padding: 5px 20px;">${agency}</td>
-				<td style="padding: 5px 20px;">${weekGap}</td>
-				<td style="padding: 5px 20px; border-right: 1px dotted #555;">${weekPrice}</td>
-				<td style="padding: 5px 20px;">${dayGap}</td>
-				<td style="padding: 5px 20px; border-right: 1px dotted #555;">${dayPrice}</td>
-				<td style="padding: 5px 20px;" class="weekDayRatio"></td>
+				<td style="padding: 5px 20px; ${borderBtm}">${agency}</td>
+				<td style="padding: 5px 20px; ${borderBtm}">${weekGap}</td>
+				<td style="padding: 5px 20px; ${borderBtm} border-right: 1px dotted #555;">${weekPrice}</td>
+				<td style="padding: 5px 20px; ${borderBtm}">${dayGap}</td>
+				<td style="padding: 5px 20px; ${borderBtm} border-right: 1px dotted #555;">${dayPrice}</td>
+				<td style="padding: 5px 20px; ${borderBtm}" class="weekDayRatio"></td>
 			`;
 			win.stocks._formatRatioCell(tr, ".weekDayRatio", weekGap, dayGap);
 			this.appendChild(tr);
@@ -168,17 +169,18 @@ win.stocks = {
 		var table = div.querySelector("table");
 		table.appendStock = function (agency, monGap, monPrice, weekGap, weekPrice, dayGap, dayPrice) {
 			var tr = document.createElement("TR");
+			var borderBtm = this.querySelectorAll("tr").length == 8 ? "border-bottom: 1px dotted #555;" : "";
 			tr.innerHTML = `
-				<td style="padding: 5px 20px;">${agency}</td>
-				<td style="padding: 5px 20px;">${monGap}</td>
-				<td style="padding: 5px 20px; border-right: 1px dotted #555;">${monPrice}</td>
-				<td style="padding: 5px 20px;">${weekGap}</td>
-				<td style="padding: 5px 20px; border-right: 1px dotted #555;">${weekPrice}</td>
-				<td style="padding: 5px 20px; border-right: 1px dotted #555;" class="monWeekRatio"></td>
-				<td style="padding: 5px 20px;">${dayGap}</td>
-				<td style="padding: 5px 20px; border-right: 1px dotted #555;">${dayPrice}</td>
-				<td style="padding: 5px 20px; border-right: 1px dotted #555;" class="weekDayRatio"></td>
-				<td style="padding: 5px 20px;" class="monDayRatio"></td>
+				<td style="padding: 5px 20px; ${borderBtm}">${agency}</td>
+				<td style="padding: 5px 20px; ${borderBtm}">${monGap}</td>
+				<td style="padding: 5px 20px; ${borderBtm} border-right: 1px dotted #555;">${monPrice}</td>
+				<td style="padding: 5px 20px; ${borderBtm}">${weekGap}</td>
+				<td style="padding: 5px 20px; ${borderBtm} border-right: 1px dotted #555;">${weekPrice}</td>
+				<td style="padding: 5px 20px; ${borderBtm} border-right: 1px dotted #555;" class="monWeekRatio"></td>
+				<td style="padding: 5px 20px; ${borderBtm}">${dayGap}</td>
+				<td style="padding: 5px 20px; ${borderBtm} border-right: 1px dotted #555;">${dayPrice}</td>
+				<td style="padding: 5px 20px; ${borderBtm} border-right: 1px dotted #555;" class="weekDayRatio"></td>
+				<td style="padding: 5px 20px; ${borderBtm}" class="monDayRatio"></td>
 			`;
 			var arr = [
 				[".monWeekRatio", monGap, weekGap],
@@ -230,8 +232,6 @@ win.stocks = {
 				<th style="text-align:center;">日均價</th>
 				<th style="text-align:center;">日週買賣超%</th>
 			</thead>
-			<tbody>
-			</tbody>
 		</table>
 	`,
 
@@ -250,8 +250,6 @@ win.stocks = {
 				<th style="text-align:center;">日週買賣超%</th>
 				<th style="text-align:center;">日月買賣超%</th>
 			</thead>
-			<tbody>
-			</tbody>
 		</table>
 	`
 };
