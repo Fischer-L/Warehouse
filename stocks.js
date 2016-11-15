@@ -145,7 +145,7 @@ win.stocks = {
 		var table = div.querySelector("table");
 		table.appendStock = function (agency, weekGap, weekPrice, dayGap, dayPrice) {
 			var tr = document.createElement("TR");
-			var borderBtm = this.querySelectorAll("tr").length == 8 ? "border-bottom: 1px dotted #555;" : "";
+			var borderBtm = this.querySelectorAll("tr").length == 10 ? "border-bottom: 1px dotted #555;" : "";
 			tr.innerHTML = `
 				<td style="padding: 5px 20px; ${borderBtm}">${agency}</td>
 				<td style="padding: 5px 20px; ${borderBtm}">${weekGap}</td>
@@ -169,7 +169,7 @@ win.stocks = {
 		var table = div.querySelector("table");
 		table.appendStock = function (agency, monGap, monPrice, weekGap, weekPrice, dayGap, dayPrice) {
 			var tr = document.createElement("TR");
-			var borderBtm = this.querySelectorAll("tr").length == 8 ? "border-bottom: 1px dotted #555;" : "";
+			var borderBtm = this.querySelectorAll("tr").length == 10 ? "border-bottom: 1px dotted #555;" : "";
 			tr.innerHTML = `
 				<td style="padding: 5px 20px; ${borderBtm}">${agency}</td>
 				<td style="padding: 5px 20px; ${borderBtm}">${monGap}</td>
