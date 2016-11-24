@@ -144,15 +144,15 @@ win.stocks = {
 
 		var table = div.querySelector("table");
 		table.appendStock = function (agency, weekGap, weekPrice, dayGap, dayPrice) {
-			var tr = document.createElement("TR");
-			var borderBtm = this.querySelectorAll("tr").length == 10 ? "border-bottom: 1px dotted #555;" : "";
+			var tr = document.createElement("TR"); 
+			var bg = this.querySelectorAll("tr").length == 6 ? "background: pink;" : "";
 			tr.innerHTML = `
-				<td style="padding: 5px 20px; ${borderBtm}">${agency}</td>
-				<td style="padding: 5px 20px; ${borderBtm}">${weekGap}</td>
-				<td style="padding: 5px 20px; ${borderBtm} border-right: 1px dotted #555;">${weekPrice}</td>
-				<td style="padding: 5px 20px; ${borderBtm}">${dayGap}</td>
-				<td style="padding: 5px 20px; ${borderBtm} border-right: 1px dotted #555;">${dayPrice}</td>
-				<td style="padding: 5px 20px; ${borderBtm}" class="weekDayRatio"></td>
+				<td style="padding: 5px 20px; ${bg}">${agency}</td>
+				<td style="padding: 5px 20px; ${bg}">${weekGap}</td>
+				<td style="padding: 5px 20px; ${bg} border-right: 1px dotted #555;">${weekPrice}</td>
+				<td style="padding: 5px 20px; ${bg}">${dayGap}</td>
+				<td style="padding: 5px 20px; ${bg} border-right: 1px dotted #555;">${dayPrice}</td>
+				<td style="padding: 5px 20px; ${bg}" class="weekDayRatio"></td>
 			`;
 			win.stocks._formatRatioCell(tr, ".weekDayRatio", weekGap, dayGap);
 			this.appendChild(tr);
@@ -169,18 +169,18 @@ win.stocks = {
 		var table = div.querySelector("table");
 		table.appendStock = function (agency, monGap, monPrice, weekGap, weekPrice, dayGap, dayPrice) {
 			var tr = document.createElement("TR");
-			var borderBtm = this.querySelectorAll("tr").length == 10 ? "border-bottom: 1px dotted #555;" : "";
+			var bg = this.querySelectorAll("tr").length == 6 ? "background: pink;" : "";
 			tr.innerHTML = `
-				<td style="padding: 5px 20px; ${borderBtm}">${agency}</td>
-				<td style="padding: 5px 20px; ${borderBtm}">${monGap}</td>
-				<td style="padding: 5px 20px; ${borderBtm} border-right: 1px dotted #555;">${monPrice}</td>
-				<td style="padding: 5px 20px; ${borderBtm}">${weekGap}</td>
-				<td style="padding: 5px 20px; ${borderBtm} border-right: 1px dotted #555;">${weekPrice}</td>
-				<td style="padding: 5px 20px; ${borderBtm} border-right: 1px dotted #555;" class="monWeekRatio"></td>
-				<td style="padding: 5px 20px; ${borderBtm}">${dayGap}</td>
-				<td style="padding: 5px 20px; ${borderBtm} border-right: 1px dotted #555;">${dayPrice}</td>
-				<td style="padding: 5px 20px; ${borderBtm} border-right: 1px dotted #555;" class="weekDayRatio"></td>
-				<td style="padding: 5px 20px; ${borderBtm}" class="monDayRatio"></td>
+				<td style="padding: 5px 20px; ${bg}">${agency}</td>
+				<td style="padding: 5px 20px; ${bg}">${monGap}</td>
+				<td style="padding: 5px 20px; ${bg} border-right: 1px dotted #555;">${monPrice}</td>
+				<td style="padding: 5px 20px; ${bg}">${weekGap}</td>
+				<td style="padding: 5px 20px; ${bg} border-right: 1px dotted #555;">${weekPrice}</td>
+				<td style="padding: 5px 20px; ${bg} border-right: 1px dotted #555;" class="monWeekRatio"></td>
+				<td style="padding: 5px 20px; ${bg}">${dayGap}</td>
+				<td style="padding: 5px 20px; ${bg} border-right: 1px dotted #555;">${dayPrice}</td>
+				<td style="padding: 5px 20px; ${bg} border-right: 1px dotted #555;" class="weekDayRatio"></td>
+				<td style="padding: 5px 20px; ${bg}" class="monDayRatio"></td>
 			`;
 			var arr = [
 				[".monWeekRatio", monGap, weekGap],
