@@ -3,12 +3,52 @@
 
 win.stocks = {
 
+	calculateAvg: function () {
+		var t  = document.querySelector("table.solid_1_padding_3_1_tbl");
+		var foreignRow = t.querySelectorAll("tr")[1];
+		var totalRow = t.querySelectorAll("tr")[4];
+		var avgParams = [ // [ td index, days ]
+			[ 1, 3 ], [ 2, 5 ], [ 4, 21 ], [ 5, 60 ]
+		];
+
+		[ foreignRow, totalRow ].forEach(row => {
+			var avgs = [];
+			for (let [ i, days ] of avgParams) {
+				let bought = row.querySelectorAll("td")[i].querySelector("font").textContent;
+				bought = parseInt(bought.substr(1).replace(/,/g, ''));
+				avgs.push(bought/days);
+			}
+			console.log(avgs);
+		});
+	},
+
 	parseSource: function () {
 		var list = {
 			buy: this._parseSourceList("listBuy"),
 			sell: this._parseSourceList("listSell")
 		};
 		return JSON.stringify(list);
+	},
+
+	parseMon: function () {
+		this._monList = {
+			buy: this._parseSourceList("listBuy"),
+			sell: this._parseSourceList("listSell")
+		};
+	},
+
+	parseWeek: function () {
+		this._weekList = {
+			buy: this._parseSourceList("listBuy"),
+			sell: this._parseSourceList("listSell")
+		};
+	},
+
+	parseDay: function () {
+		this._dayList = {
+			buy: this._parseSourceList("listBuy"),
+			sell: this._parseSourceList("listSell")
+		};
 	},
 
 	_parseSourceList: function (tableID) {
@@ -30,6 +70,11 @@ win.stocks = {
 	},
 
 	analyze: function (monthlyList, weeklyList, dailyList) {
+		if (!monthlyList && !weeklyList && !dailyList) {
+			monthlyList = this._monList;
+			weeklyList = this._weekList;
+			dailyList = this._dayList;
+		}
 		this._analyze(
 			monthlyList.buy, 
 			monthlyList.sell, 
