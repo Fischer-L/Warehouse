@@ -15,7 +15,7 @@ win.stocks = {
 			var avgs = [];
 			for (let [ i, days ] of avgParams) {
 				let bought = row.querySelectorAll("td")[i].querySelector("font").textContent;
-				bought = parseInt(bought.substr(1).replace(/,/g, ''));
+				bought = parseInt(bought.replace(/,/g, ''));
 				avgs.push(bought/days);
 			}
 			console.log(avgs);
