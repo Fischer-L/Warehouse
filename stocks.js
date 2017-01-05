@@ -55,7 +55,7 @@ win.stocks = {
 		var dataArray = [];
 		var table = document.getElementById(tableID);
 		var trs = table.querySelectorAll("tbody > tr");
-		for (var i = 0; i < trs.length - 1; ++i) {
+		for (var i = 0, j = 25; i < trs.length - 1 && j > 0; ++i, --j) {
 			var data = {};
 			var tr = trs[i];
 			var tds = tr.querySelectorAll("td");
