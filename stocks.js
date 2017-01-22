@@ -95,12 +95,13 @@ win.stocks = {
 		(new Promise(function (res) {
 			select.selectedIndex = 4;
 			select.dispatchEvent(e);
-			setTimeout(mon, 300);
+			setTimeout(mon, 1100);
 			function mon() {
 				self.parseMon();
 				if (self._monList.buy.length == 0) {
-					setTimeout(mon, 300);
+					setTimeout(mon, 1100);
 				} else {
+					console.log("Mon res", self._monList.buy.length);
 					res();
 				}
 			}
@@ -108,12 +109,13 @@ win.stocks = {
 			return new Promise(function (res) {
 				select.selectedIndex = 2;
 				select.dispatchEvent(e);
-				setTimeout(week, 300);
+				setTimeout(week, 1100);
 				function week() {
 					self.parseWeek();
 					if (self._weekList.buy.length == 0) {
-						setTimeout(week, 300);
+						setTimeout(week, 1100);
 					} else {
+						console.log("Week res", self._weekList.buy.length);
 						res();
 					}
 				}
@@ -123,12 +125,13 @@ win.stocks = {
 			return new Promise(function (res) {
 				var b = document.getElementById("btnDaysDefine");
 				b.click();
-				setTimeout(day, 300);
+				setTimeout(day, 1100);
 				function day() {
 					self.parseDay();
 					if (self._dayList.buy.length == 0) {
-						setTimeout(day, 300);
+						setTimeout(day, 1100);
 					} else {
+						console.log("Day res", self._dayList.buy.length);
 						res();
 					}
 				}
