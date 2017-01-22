@@ -85,6 +85,59 @@ win.stocks = {
 		);
 	},
 
+	autoAnalyze: function () {
+		var self = this;
+		var e = new Event("change");
+		var select = document.getElementById("selectDaysInterval");
+		this._monList = null;
+		this._weekList = null;
+		this._dayList = null;
+		(new Promise(function (res) {
+			select.selectedIndex = 4;
+			select.dispatchEvent(e);
+			setTimeout(mon, 300);
+			function mon() {
+				self.parseMon();
+				if (self._monList.buy.length == 0) {
+					setTimeout(mon, 300);
+				} else {
+					res();
+				}
+			}
+		})).then(function () {
+			return new Promise(function (res) {
+				select.selectedIndex = 2;
+				select.dispatchEvent(e);
+				setTimeout(week, 300);
+				function week() {
+					self.parseWeek();
+					if (self._weekList.buy.length == 0) {
+						setTimeout(week, 300);
+					} else {
+						res();
+					}
+				}
+
+			});
+		}).then(function () {
+			return new Promise(function (res) {
+				var b = document.getElementById("btnDaysDefine");
+				b.click();
+				setTimeout(day, 300);
+				function day() {
+					self.parseDay();
+					if (self._dayList.buy.length == 0) {
+						setTimeout(day, 300);
+					} else {
+						res();
+					}
+				}
+			});
+		}).then(function () {
+			self.analyze();
+		});
+	},
+
 	_analyze: function (monthlyBuyArray, monthlySellArray, weeklyBuyArray, weeklySellArray, dailyBuyArray, dailySellArray) {
 		var	monthlyBuySide  = this.createMapFromArray(monthlyBuyArray),
 			monthlySellSide = this.createMapFromArray(monthlySellArray),
